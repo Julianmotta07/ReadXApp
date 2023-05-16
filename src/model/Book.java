@@ -1,20 +1,41 @@
 package model;
+import java.util.Calendar;
 
 public class Book extends Product{
 
     //attribute
-    private double saleValue;
     private String review;
     private int copiesSold;
 
     //relations
     private Genre genre;
 
-    public Book(String name, int pagesNumber, String publicationDate, String url, double saleValue, String review, int genreOpt){
-        super(name, pagesNumber, publicationDate, url);
-        this.saleValue=saleValue;
+    public Book(String id, String name, int pagesNumber, Calendar publicationDate, String url, double saleValue, String review, int genreOpt){
+        super(id, name, pagesNumber, publicationDate, url, saleValue);
         this.review=review;
+        switch(genreOpt){
+            case 1:
+                this.genre=Genre.SCI_FI;
+                break;
+            case 2:
+                this.genre=Genre.FANTASY;
+                break;
+            case 3:
+                this.genre=Genre.HISTORICAL_NOVEL;
+                break;
+        }
         copiesSold=0;
+    }
+
+    public void setReview(String review){
+        this.review=review;
+    }
+
+    public Genre getGenre(){
+        return genre;
+    }
+    
+    public void setGenre(int genreOpt){
         switch(genreOpt){
             case 1:
                 this.genre=Genre.SCI_FI;
@@ -28,11 +49,19 @@ public class Book extends Product{
         }
     }
 
+    public int getCopiesSold(){
+        return copiesSold;
+    }
+
+    public void setCopiesSold(int copiesSold){
+        this.copiesSold=copiesSold;
+    }
+
     @Override
     public String toString(){
-        return super.toString()+"Sale value: $"+ saleValue +"\n" +
+        return super.toString()+"Sale value: $"+ super.getValue() +"\n" +
         "Review: "+ review+ "\n" +
-        "Copies sold: "+ copiesSold+ "\n" +
-        "Genre: " + genre.name() + "\n";
+        "Genre: " + genre.name() + "\n" +
+        "Copies sold: "+ copiesSold+ "\n";
     }
 }

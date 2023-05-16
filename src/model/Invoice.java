@@ -7,9 +7,23 @@ public class Invoice{
     private double amountPaid;
     private Calendar operationDate;
 
-    public Invoice(double amountPaid, Calendar operationDate){
+    //relations
+    private User user;
+    private Product product;
+
+    public Invoice(double amountPaid, User user, Product product){
         this.amountPaid=amountPaid;
-        this.operationDate=operationDate;
+        this.user=user;
+        this.product=product;
+        operationDate= Calendar.getInstance();
+    }
+
+    public double getAmountPaid(){
+        return amountPaid;
+    }
+
+    public Product getProduct(){
+        return product;
     }
     
 }

@@ -1,7 +1,7 @@
 package ui;
-
 import java.util.Scanner;
 import model.Company;
+import java.util.Calendar;
 
 public class ReactXApp {
 
@@ -27,16 +27,17 @@ public class ReactXApp {
             System.out.println("2: Register product.....................");
             System.out.println("3: Edit product.........................");
             System.out.println("4: Delete product.......................");
-            System.out.println("5: Generate object......................");
+            System.out.println("5: Generate objects.....................");
             System.out.println("6: Buy book.............................");
-            System.out.println("7: Subscribe book.......................");
+            System.out.println("7: Subscribe magazine...................");
             System.out.println("8: Display my library...................");
-            System.out.println("9: Report pages read by product.........");
-            System.out.println("10: Report genre and category most read.");
-            System.out.println("11: Report Top 5 most read products.....");
-            System.out.println("12: Report total number sales and total."); 
+            System.out.println("9: Simulate reading session.............");
+            System.out.println("10: Report pages read by product........");
+            System.out.println("11: Report genre and category most read.");
+            System.out.println("12: Report Top 5 most read products.....");
+            System.out.println("13: Report total number sales and total."); 
             System.out.println("    sales per genre.....................");
-            System.out.println("13: Report active subscriptions number..");
+            System.out.println("14: Report active subscriptions number..");
             System.out.println("    and total paid per category.........");
             System.out.println("0: Exit.................................");
             System.out.println("----------------------------------------");
@@ -64,7 +65,7 @@ public class ReactXApp {
                     lector.nextLine();
                     break;
                 case 5:
-                    generateObject();
+                    generateObjects();
                     System.out.println("Press Enter to return to the menu...");
                     lector.nextLine();
                     break;
@@ -80,30 +81,31 @@ public class ReactXApp {
                     break;
                 case 8:
                     displayMyLibrary();
-                    System.out.println("Press Enter to return to the menu...");
-                    lector.nextLine();
                     break;
                 case 9:
-                    reportPagesReadByProduct();
-                    System.out.println("Press Enter to return to the menu...");
-                    lector.nextLine();
+                    simulateReadingSession();
                     break;
                 case 10:
-                    reportGenreAndCategoryMostRead();
+                    reportPagesReadPerProduct();
                     System.out.println("Press Enter to return to the menu...");
                     lector.nextLine();
                     break;
                 case 11:
-                    reportTop5MostReadProducts();
+                    reportGenreAndCategoryMostRead();
                     System.out.println("Press Enter to return to the menu...");
                     lector.nextLine();
                     break;
                 case 12:
-                    soldNumAndTotalPaidPerGenre();
+                    reportTop5MostReadProducts();
                     System.out.println("Press Enter to return to the menu...");
                     lector.nextLine();
                     break;
                 case 13:
+                    soldNumAndTotalPaidPerGenre();
+                    System.out.println("Press Enter to return to the menu...");
+                    lector.nextLine();
+                    break;
+                case 14:
                     actSubsNumAndTotalPaidPerCategory();
                     System.out.println("Press Enter to return to the menu...");
                     lector.nextLine();
@@ -112,6 +114,7 @@ public class ReactXApp {
                     break;
                 default:
                     System.out.println("Invalid option, try again!");
+                    lector.nextLine();
             }
         } while (option!=0);
     }
@@ -136,8 +139,16 @@ public class ReactXApp {
         System.out.println("Enter pages number:");
         int pagesNum=lector.nextInt();
         lector.nextLine();
+
         System.out.println("Enter publication date (dd/mm/yyyy):");
-        String publicationDate=lector.nextLine();
+        String input = lector.nextLine();
+        String[] parts = input.split("/");
+        int day = Integer.parseInt(parts[0]);
+        int month = Integer.parseInt(parts[1]) - 1;
+        int year = Integer.parseInt(parts[2]);
+        Calendar date = Calendar.getInstance();
+        date.set(year, month, day);
+
         System.out.println("Enter repository URL:");
         String url=lector.nextLine();
         System.out.println("Select product type \n 1: Book \n 2: Magazine");
@@ -145,6 +156,8 @@ public class ReactXApp {
         lector.nextLine();
 
         if (productType==1){
+            System.out.println("Enter hexadecimal identifier:");
+            String id=lector.nextLine();
             System.out.println("Enter sale value:");
             double value=lector.nextDouble();
             lector.nextLine();
@@ -154,67 +167,240 @@ public class ReactXApp {
             int genreOpt=lector.nextInt();
             lector.nextLine();
 
-            String message= company.addProduct(name, pagesNum, publicationDate, url, productType, value, review, genreOpt, null, 0);
+            String message= company.addProduct(id, name, pagesNum, date, url, value, review, genreOpt);
             System.out.println(message);
 
         } else {
+            System.out.println("Enter alphanumeric identifier:");
+            String id=lector.nextLine();
             System.out.println("Enter subscription value:");
             double value=lector.nextDouble();
             lector.nextLine();
-            System.out.println("Enter issuance frequency:");
-            String issuanceFrequency=lector.nextLine();
-            System.out.println("Select category \n 1: Varieties \n 2: Design \n 3: Scientific");
+            System.out.println("Select issuance frequency: \n 1: Weekly \n 2: Monthly \n 3: Yearly");
+            int issuanceFreqOpt=lector.nextInt();
+            lector.nextLine();
+            System.out.println("Select category: \n 1: Varieties \n 2: Design \n 3: Scientific");
             int categoryOpt=lector.nextInt();
             lector.nextLine();
 
-            String message= company.addProduct(name, pagesNum, publicationDate, url, productType, value, null, 0, issuanceFrequency, categoryOpt);
+            String message= company.addProduct(id, name, pagesNum, date, url, value, issuanceFreqOpt, categoryOpt);
             System.out.println(message);
-
         }
-
     }
 
     public void editProduct(){
+        System.out.println("Enter identifier:");
+        String id=lector.nextLine();
+        System.out.println("Enter new pages number:");
+        int pagesNum=lector.nextInt();
+        lector.nextLine();
 
+        System.out.println("Enter new publication date (dd/mm/yyyy):");
+        String input = lector.nextLine();
+        String[] parts = input.split("/");
+        int day = Integer.parseInt(parts[0]);
+        int month = Integer.parseInt(parts[1]) - 1;
+        int year = Integer.parseInt(parts[2]);
+        Calendar date = Calendar.getInstance();
+        date.set(year, month, day);
+
+        System.out.println("Enter new repository URL:");
+        String url=lector.nextLine();
+        System.out.println("Select product type \n 1: Book \n 2: Magazine");
+        int productType=lector.nextInt();
+        lector.nextLine();
+
+        if (productType==1){
+            System.out.println("Enter new sale value:");
+            double value=lector.nextDouble();
+            lector.nextLine();
+            System.out.println("Enter new short review:");
+            String review=lector.nextLine();
+            System.out.println("Select new genre \n 1: Sci-fi \n 2: Fantasy \n 3: Historical novel");
+            int genreOpt=lector.nextInt();
+            lector.nextLine();
+
+            String message= company.editProduct(id, pagesNum, date, url, value, review, genreOpt, 0, 0);
+            System.out.println(message);
+
+        } else {
+            System.out.println("Enter new subscription value:");
+            double value=lector.nextDouble();
+            lector.nextLine();
+            System.out.println("Select new issuance frequency: \n 1: Weekly \n 2: Monthly \n 3: Yearly");
+            int issuanceFreqOpt=lector.nextInt();
+            lector.nextLine();
+            System.out.println("Select new category: \n 1: Varieties \n 2: Design \n 3: Scientific");
+            int categoryOpt=lector.nextInt();
+            lector.nextLine();
+
+            String message= company.editProduct(id, pagesNum, date, url, value, null, 0, issuanceFreqOpt, categoryOpt);
+            System.out.println(message);
+        }
     }
 
     public void deleteProduct(){
+        System.out.println("Enter identifier:");
+        String id=lector.nextLine();
 
+        String message= company.deleteProduct(id);
+        System.out.println(message);
     }
 
-    public void generateObject(){
-
+    public void generateObjects(){
+        String message= company.generateObjects();
+        System.out.println(message);
     }
 
     public void buyBook(){
+        System.out.println("Enter user identification:");
+        int userId=lector.nextInt();
+        lector.nextLine();
+        System.out.println("Enter book identifier:");
+        String bookId=lector.nextLine();
 
+        String message= company.buyBook(userId, bookId);
+        System.out.println(message);
     }
 
     public void subscribeMagazine(){
-        
+        System.out.println("Enter user identification:");
+        int userId=lector.nextInt();
+        lector.nextLine();
+        System.out.println("Enter magazine identifier:");
+        String magazineId=lector.nextLine();
+
+        String message= company.subscribeMagazine(userId, magazineId);
+        System.out.println(message);
     }
 
     public void displayMyLibrary(){
+        System.out.println("Enter user identification:");
+        int userId=lector.nextInt();
+        lector.nextLine();
 
+        int pageNum=0;
+        boolean exit=false;
+        do {
+            String library= company.displayMyLibrary(userId, pageNum);
+            System.out.println(library);
+            if ((!library.equals("Error: A user with the entered ID does not exist.")) && (!library.equals("Error: The user has no products yet."))){                System.out.println("Enter S to go to the next page");
+                if (pageNum>=1){
+                    System.out.println("Enter A to return to the previous page");
+                }
+                System.out.println("Enter M to return to the menu");
+                char option = lector.next().charAt(0);
+                lector.nextLine();
+                if (option!='M'){
+                    if(option=='S'){
+                        pageNum++;
+                    } else if (option=='A'){
+                        pageNum--;
+                    } else {
+                        System.out.println("Invalid character. Press Enter and try again.");
+                        lector.nextLine();
+                    }
+                } else {
+                    exit=true;
+                }
+            } else {
+                exit=true;
+                System.out.println("Press Enter to return to the menu...");
+                lector.nextLine();
+            }
+        } while (!exit);
     }
 
-    public void reportPagesReadByProduct(){
-        
+    public void simulateReadingSession(){
+        System.out.println("Enter user identification:");
+        int userId=lector.nextInt();
+        lector.nextLine();
+
+        boolean exit=false;
+        char pageOpt='S';
+        int pageNum=0;
+        do {
+            String library= company.displayMyLibrary(userId, pageNum);
+            System.out.println(library);
+            if ((!library.equals("Error: A user with the entered ID does not exist.")) && (!library.equals("Error: The user has no products yet."))){ 
+                System.out.println("Enter M to return to the menu");
+                System.out.println("Enter S to go to the next page");
+                if (pageNum>=1){
+                    System.out.println("Enter A to return to the previous page");
+                }
+                System.out.println("Enter product identifier:");
+                String input = lector.nextLine();
+                switch(input){
+                    default:
+                        int page=1;
+                        int pagesCount=1;
+                        do {
+                            String sesion=company.simulateReadingSesion(userId, input, pageOpt, page, pagesCount);
+                            System.out.println(sesion);
+                            if (!sesion.equals("Error: Product not found.")){
+                                if (!sesion.equals("\n\nEnd. \n\n")){
+                                    System.out.println("Enter S to go to the next page");
+                                }
+                                if (page>1){
+                                    System.out.println("Enter A to return to the previous page");
+                                }
+                                System.out.println("Enter L to return to the library");
+                                pageOpt=lector.next().charAt(0);
+                                lector.nextLine();
+                                if (pageOpt=='S'){
+                                    page++;
+                                } else if (pageOpt=='A'){
+                                    page--;
+                                }
+                                pagesCount++;
+                            } else {
+                                System.out.println("Enter L to return to the library");
+                                pageOpt=lector.next().charAt(0);
+                                lector.nextLine();
+                            }
+                        } while (pageOpt!='L');
+                        break;
+                    case "M":
+                        exit=true;
+                        break;
+                    case "S":
+                        pageNum++;
+                        pageOpt='L';
+                        break;
+                    case "A":
+                        pageNum--;
+                        pageOpt='L';
+                        break;
+                }   
+            } else {
+                System.out.println("Press Enter to return to the menu...");
+                lector.nextLine();
+            }
+        } while (pageOpt=='L' && !exit);
+    }
+
+    public void reportPagesReadPerProduct(){
+        String message= company.getPagesReadPerProduct();
+        System.out.println(message);
     }
 
     public void reportGenreAndCategoryMostRead(){
-
+        String message= company.getGenreAndCategoryMostRead();
+        System.out.println(message);
     }
 
     public void reportTop5MostReadProducts(){
-
+        String message= company.getGenreAndCategoryMostRead();
+        System.out.println(message);
     }
 
     public void soldNumAndTotalPaidPerGenre(){
-
+        String message= company.getSoldNumAndTotalPaidPerGenre();
+        System.out.println(message);
     }
 
     public void actSubsNumAndTotalPaidPerCategory(){
-
+        String message= company.getActSubsNumAndTotalPaidPerCategory();
+        System.out.println(message);
     }
 }
