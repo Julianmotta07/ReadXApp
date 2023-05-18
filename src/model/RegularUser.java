@@ -60,50 +60,42 @@ public class RegularUser extends User implements Announceable{
 
     public String showLibrary(int pageNum){
         String library="Library of "+super.getName()+": \nPage "+(pageNum+1);
-        if (books[0]==null && magazines[0]==null){
-            library="Error: The user has no products yet.";
-        } else {
-            ArrayList<Product> userProducts = new ArrayList<>();
-            for (int i=0; i < books.length; i++){
-                if(books[i]!=null){
-                    userProducts.add(books[i]);
+        ArrayList<Product> userProducts = new ArrayList<>();
+        for (int i=0; i < books.length; i++){
+            if(books[i]!=null){
+                userProducts.add(books[i]);
+            }
+        }
+        for (int i=0; i < magazines.length; i++){
+            if(magazines[i]!=null){
+                userProducts.add(magazines[i]);
+            }
+        }
+        for (int i = 0; i < userProducts.size(); i++) {
+            for (int j = i + 1; j < userProducts.size(); j++) {
+                Product product1 = userProducts.get(i);
+                Product product2 = userProducts.get(j);
+                if (product2.getPublicationDate().before(product1.getPublicationDate())) {
+                    userProducts.set(i, product2);
+                    userProducts.set(j, product1);
                 }
             }
-            for (int i=0; i < magazines.length; i++){
-                if(magazines[i]!=null){
-                    userProducts.add(magazines[i]);
-                }
-            }
-            for (int i = 0; i < userProducts.size(); i++) {
-                for (int j = i + 1; j < userProducts.size(); j++) {
-                    Product product1 = userProducts.get(i);
-                    Product product2 = userProducts.get(j);
-                    if (product2.getPublicationDate().before(product1.getPublicationDate())) {
-                        userProducts.set(i, product2);
-                        userProducts.set(j, product1);
-                    }
-                }
-            }
+        }
 
-            int startIndex = pageNum * 25;
-            int endIndex = Math.min(startIndex + 25, userProducts.size());
+        int startIndex = pageNum * 25;
+        int endIndex = Math.min(startIndex + 25, userProducts.size());
 
-            for (int i = 0; i < super.getLibrary().length; i++) {
-                for (int j = 0; j < super.getLibrary()[i].length; j++) {
-                    if (i * super.getLibrary().length + j < endIndex - startIndex) {
-                        Product product = userProducts.get(startIndex + i * super.getLibrary().length + j);
-                        if (product != null) {
-                            super.getLibrary()[i][j] = product.getId();
-                        } else {
-                            super.getLibrary()[i][j] = "___";
-                        }
-                    } else {
-                        super.getLibrary()[i][j] = "___";
-                    }
+        for (int i = 0; i < super.getLibrary().length; i++) {
+            for (int j = 0; j < super.getLibrary()[i].length; j++) {
+                if (i * super.getLibrary().length + j < endIndex - startIndex) {
+                    Product product = userProducts.get(startIndex + i * super.getLibrary().length + j);
+                    super.getLibrary()[i][j] = product.getId();
+                } else {
+                    super.getLibrary()[i][j] = "___";
                 }
             }
-            library += super.displayLibrary();
-        }  
+        }
+        library += super.displayLibrary();
         return library;
     }
 
@@ -142,7 +134,7 @@ public class RegularUser extends User implements Announceable{
                 }
             break;
             case 2:
-                if (pagesCount%5==0){
+                if (pagesCount%5==0 || pagesCount==1){
                     ad="\nAdvertisement: \n"+ads[randomIndex]+"\n";
                 }
             break;  

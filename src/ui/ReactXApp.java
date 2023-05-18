@@ -21,26 +21,26 @@ public class ReactXApp {
     public void menu(){
         int option;
         do{
-            System.out.println("-----------Welcome to the menu----------");
-            System.out.println("------------Select an option------------");
-            System.out.println("1: Register user........................");
-            System.out.println("2: Register product.....................");
-            System.out.println("3: Edit product.........................");
-            System.out.println("4: Delete product.......................");
-            System.out.println("5: Generate objects.....................");
-            System.out.println("6: Buy book.............................");
-            System.out.println("7: Subscribe magazine...................");
-            System.out.println("8: Display my library...................");
-            System.out.println("9: Simulate reading session.............");
-            System.out.println("10: Report pages read by product........");
-            System.out.println("11: Report genre and category most read.");
-            System.out.println("12: Report Top 5 most read products.....");
-            System.out.println("13: Report total number sales and total."); 
-            System.out.println("    sales per genre.....................");
-            System.out.println("14: Report active subscriptions number..");
-            System.out.println("    and total paid per category.........");
-            System.out.println("0: Exit.................................");
-            System.out.println("----------------------------------------");
+            System.out.println("--------------Welcome to the menu------------");
+            System.out.println("---------------Select an option--------------");
+            System.out.println("1: Register user.............................");
+            System.out.println("2: Register product..........................");
+            System.out.println("3: Edit product..............................");
+            System.out.println("4: Delete product............................");
+            System.out.println("5: Generate objects..........................");
+            System.out.println("6: Buy book..................................");
+            System.out.println("7: Subscribe magazine........................");
+            System.out.println("8: Display my library........................");
+            System.out.println("9: Simulate reading session..................");
+            System.out.println("10: Report pages read per product type.......");
+            System.out.println("11: Report genre and category most read......");
+            System.out.println("12: Report Top 5 most read products..........");
+            System.out.println("13: Report total number sales and total sales"); 
+            System.out.println("    per genre................................");
+            System.out.println("14: Report active subscriptions number and...");
+            System.out.println("    total paid per category..................");
+            System.out.println("0: Exit......................................");
+            System.out.println("---------------------------------------------");
             option=lector.nextInt();
             lector.nextLine();
             switch(option){
@@ -96,7 +96,7 @@ public class ReactXApp {
                     lector.nextLine();
                     break;
                 case 12:
-                    reportTop5MostReadProducts();
+                    reportTop5MostReadProductsPerType();
                     System.out.println("Press Enter to return to the menu...");
                     lector.nextLine();
                     break;
@@ -284,7 +284,8 @@ public class ReactXApp {
         do {
             String library= company.displayMyLibrary(userId, pageNum);
             System.out.println(library);
-            if ((!library.equals("Error: A user with the entered ID does not exist.")) && (!library.equals("Error: The user has no products yet."))){                System.out.println("Enter S to go to the next page");
+            if ((!library.equals("Error: A user with the entered ID does not exist."))){                
+                System.out.println("Enter S to go to the next page");
                 if (pageNum>=1){
                     System.out.println("Enter A to return to the previous page");
                 }
@@ -322,52 +323,76 @@ public class ReactXApp {
         do {
             String library= company.displayMyLibrary(userId, pageNum);
             System.out.println(library);
-            if ((!library.equals("Error: A user with the entered ID does not exist.")) && (!library.equals("Error: The user has no products yet."))){ 
+            if ((!library.equals("Error: A user with the entered ID does not exist."))){ 
                 System.out.println("Enter M to return to the menu");
                 System.out.println("Enter S to go to the next page");
                 if (pageNum>=1){
                     System.out.println("Enter A to return to the previous page");
                 }
-                System.out.println("Enter product identifier:");
-                String input = lector.nextLine();
+                System.out.println("How do you want to select your product? \n I: Identifier \n C: Coordinate");
+                char input = lector.next().charAt(0);
+                lector.nextLine();
                 switch(input){
                     default:
-                        int page=1;
-                        int pagesCount=1;
-                        do {
-                            String sesion=company.simulateReadingSesion(userId, input, pageOpt, page, pagesCount);
-                            System.out.println(sesion);
-                            if (!sesion.equals("Error: Product not found.")){
-                                if (!sesion.equals("\n\nEnd. \n\n")){
-                                    System.out.println("Enter S to go to the next page");
-                                }
-                                if (page>1){
-                                    System.out.println("Enter A to return to the previous page");
-                                }
-                                System.out.println("Enter L to return to the library");
-                                pageOpt=lector.next().charAt(0);
-                                lector.nextLine();
-                                if (pageOpt=='S'){
-                                    page++;
-                                } else if (pageOpt=='A'){
-                                    page--;
-                                }
-                                pagesCount++;
+                        if (input=='I' || input=='C'){
+                            String productId=""; 
+                            int xCoord=-1; int yCoord=-1; 
+                            if (input=='I'){
+                                System.out.println("Enter identifier:");
+                                productId = lector.nextLine();
                             } else {
-                                System.out.println("Enter L to return to the library");
-                                pageOpt=lector.next().charAt(0);
+                                System.out.println("Enter X coordinate:");
+                                xCoord = lector.nextInt();
+                                lector.nextLine();
+                                System.out.println("Enter Y coordinate:");
+                                yCoord = lector.nextInt();
                                 lector.nextLine();
                             }
-                        } while (pageOpt!='L');
+                            String sesion="";
+                            int page=1; int pagesCount=1;
+                            do {
+                                if (!productId.equals("")){
+                                    sesion=company.simulateReadingSesion(userId, productId, pageOpt, page, pagesCount);
+                                } else {
+                                    sesion=company.simulateReadingSesion(userId, xCoord, yCoord, pageOpt, page, pagesCount);
+                                }
+                                System.out.println(sesion);
+                                if (!sesion.equals("Error: Product not found.")){
+                                    if (!sesion.equals("\n\nEnd. \n\n")){
+                                        System.out.println("Enter S to go to the next page");
+                                    }
+                                    if (page>1){
+                                        System.out.println("Enter A to return to the previous page");
+                                    }
+                                    System.out.println("Enter L to return to the library");
+                                    pageOpt=lector.next().charAt(0);
+                                    lector.nextLine();
+                                    if (pageOpt=='S'){
+                                        page++;
+                                    } else if (pageOpt=='A'){
+                                        page--;
+                                    }
+                                    pagesCount++;
+                                } else {
+                                    System.out.println("Enter L to return to the library");
+                                    pageOpt=lector.next().charAt(0);
+                                    lector.nextLine();
+                                }
+                            } while (pageOpt!='L');
+                        } else {
+                            pageOpt='L';
+                            System.out.println("Invalid character. Press Enter and try again.");
+                            lector.nextLine();
+                        }   
                         break;
-                    case "M":
+                    case 'M':
                         exit=true;
                         break;
-                    case "S":
+                    case 'S':
                         pageNum++;
                         pageOpt='L';
                         break;
-                    case "A":
+                    case 'A':
                         pageNum--;
                         pageOpt='L';
                         break;
@@ -380,7 +405,7 @@ public class ReactXApp {
     }
 
     public void reportPagesReadPerProduct(){
-        String message= company.getPagesReadPerProduct();
+        String message= company.getPagesReadPerProductType();
         System.out.println(message);
     }
 
@@ -389,8 +414,8 @@ public class ReactXApp {
         System.out.println(message);
     }
 
-    public void reportTop5MostReadProducts(){
-        String message= company.getGenreAndCategoryMostRead();
+    public void reportTop5MostReadProductsPerType(){
+        String message= company.getTop5MostReadProductsPerType();
         System.out.println(message);
     }
 

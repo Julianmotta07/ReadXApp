@@ -37,7 +37,7 @@ public class Company{
     public String addProduct(String id, String name, int pagesNum, Calendar publicationDate, String url, double saleValue, String review, int genreOpt){
         String message="New book successfully registered!.";
         if (searchProduct(id)!=null){
-            message="Error: A book with the entered ID already exists.";
+            message="Error: A product with the entered ID already exists.";
         } else {
             Book book = new Book(id, name, pagesNum, publicationDate, url, saleValue, review, genreOpt);
             products.add(book); 
@@ -48,7 +48,7 @@ public class Company{
     public String addProduct(String id, String name, int pagesNum, Calendar publicationDate, String url, double subscriptionValue, int issuanceFreqOpt, int categoryOpt){
         String message="New magazine successfully registered!.";
         if (searchProduct(id)!=null){
-            message="Error: A magazine with the entered ID already exists.";
+            message="Error: A product with the entered ID already exists.";
         } else {
             Magazine magazine = new Magazine(id, name, pagesNum, publicationDate, url, subscriptionValue, issuanceFreqOpt, categoryOpt);
             products.add(magazine); 
@@ -200,25 +200,62 @@ public class Company{
         return message;
     }
 
-    public String getPagesReadPerProduct(){
-        String list="Pages read per bibliographic product: ";
+    public String simulateReadingSesion(int userId, int xCoord, int yCoord, char pageOpt, int page, int pagesCount){
+        String message="Reading session in progress... \n";
+        User user = searchUser(userId);
+        String[][] matrix = user.getLibrary();
+        String productId= matrix[xCoord][yCoord];
+        Product product=null;
+        if (user instanceof RegularUser) {
+            RegularUser regularUser = (RegularUser) user; 
+            product = regularUser.searchProduct(productId);
+            if (product instanceof Book) {
+                message+=regularUser.displayAds(1, pagesCount);
+            } else {
+                message+=regularUser.displayAds(2, pagesCount);
+            }
+        } else {
+            PremiumUser premiumUser = (PremiumUser) user;
+            product = premiumUser.searchProduct(productId);
+        }
+        if(product!=null){
+            if (page <= product.getPagesNumber()) {
+                message+="\nReading: "+product.getName()+"\n";
+                message+="\nReading page "+page+" of "+product.getPagesNumber()+"\n";
+                if (pageOpt=='S'){
+                product.setPagesRead(product.getPagesRead()+1);
+                }
+            } else {
+                message="\n\nEnd. \n\n";
+            }
+        } else {
+            message="Error: Product not found.";
+        }
+        return message;
+    }
+
+    public String getPagesReadPerProductType(){
+        String list="Pages read per bibliographic product type: \n";
         if (products.isEmpty()){
             list="Error: No products registered yet.";
         } else {
+            int bookSum=0; int magazineSum=0;
             for (int i=0; i < products.size(); i++) {
                 Product product=products.get(i);
                 if (product instanceof Book) {
-                    list+="- Book: "+product.getName()+"\n  Pages read: "+product.getPagesRead();
+                    bookSum=bookSum+product.getPagesRead();
                 } else {
-                    list+="- Magazine: "+product.getName()+"\n  Pages read: "+product.getPagesRead();
+                    magazineSum=magazineSum+product.getPagesRead();
                 }
             }
+            list+="- Book: "+bookSum;
+            list+="\n- Magazine: "+magazineSum;
         }
         return list;
     }
 
     public String getGenreAndCategoryMostRead(){
-        String message="Most read genre:\n ";
+        String message="- Most read genre: ";
         if (products.isEmpty()){
             message="Error: No products registered yet.";
         } else {
@@ -262,31 +299,72 @@ public class Company{
                 }
             }
 
-            message+=genreNames[maxIndexG]+"\n Pages read: "+genres[maxIndexG]+"\nMost read category:";
-            message+=categoryNames[maxIndexC]+"\n Pages read: "+categories[maxIndexC];
+            if (genres[maxIndexG] > 0){
+                message+=genreNames[maxIndexG]+"\n  Pages read: "+genres[maxIndexG];
+            } else {
+                message+="";
+            }
+            message+="\n- Most read category: ";
+            if (categories[maxIndexC] > 0) {
+                message+=categoryNames[maxIndexC]+"\n  Pages read: "+categories[maxIndexC];
+            } else {
+                message+="";
+            }
         }
         return message;
     }
 
-    public String getTop5MostReadProducts(){
+    public String getTop5MostReadProductsPerType(){
         String list="";
         if (products.isEmpty()){
             list="Error: No products registered yet.";
         } else {
+            ArrayList<Book> booksList = new ArrayList<>();
+            ArrayList<Magazine> magazinesList = new ArrayList<>();
             for (int i = 0; i < products.size(); i++) {
-                for (int j = i + 1; j < products.size(); j++) {
-                    Product product1 = products.get(i);
-                    Product product2 = products.get(j);
-                    if (product2.getPagesRead() > product1.getPagesRead()) {
-                        products.set(i, product2);
-                        products.set(j, product1);
+                Product product = products.get(i);
+                if (product.getPagesRead() > 0){
+                    if (product instanceof Book){
+                        Book book = (Book) product;
+                        booksList.add(book);
+                    } else {
+                        Magazine magazine = (Magazine) product;
+                        magazinesList.add(magazine);
                     }
                 }
             }
-            for (int i = 0; i < 5; i++) {
-                Product product = products.get(i);
-                list+="-"+(i+1)+". "+product.getName()+"\n";
+            for (int i = 0; i < booksList.size(); i++) {
+                for (int j = i + 1; j < booksList.size(); j++) {
+                    Book book1 = booksList.get(i);
+                    Book book2 = booksList.get(j);
+                    if (book2.getPagesRead() > book1.getPagesRead()) {
+                        booksList.set(i, book2);
+                        booksList.set(j, book1);
+                    }
+                }
             }
+            for (int i = 0; i < magazinesList.size(); i++) {
+                for (int j = i + 1; j < magazinesList.size(); j++) {
+                    Magazine magazine1 = magazinesList.get(i);
+                    Magazine magazine2 = magazinesList.get(j);
+                    if (magazine2.getPagesRead() > magazine1.getPagesRead()) {
+                        magazinesList.set(i, magazine2);
+                        magazinesList.set(j, magazine1);
+                    }
+                }
+            }
+            String topBooks="Top 5 most read books: \n"; 
+            String topMagazines="Top 5 most read magazines: \n";
+            for (int i = 0; i < Math.min(5, booksList.size()); i++) {
+                Book book = booksList.get(i);
+                topBooks+="-"+(i+1)+". "+book.getName()+"\n";
+            }
+            
+            for (int i = 0; i < Math.min(5, magazinesList.size()); i++) {
+                Magazine magazine = magazinesList.get(i);
+                topMagazines+="-"+(i+1)+". "+magazine.getName()+"\n";
+            }
+            list=topBooks+topMagazines;
         }
         return list;
     }
@@ -317,7 +395,7 @@ public class Company{
             }
             String[] genreNames = {"- Sci-Fi:", "- Fantasy:", "- Historical novel:"};
             for (int i = 0; i < 3; i++) {
-                list+=genreNames[i]+"\n  Copies sold: "+salesTotals[i]+"\n  Total sales value: $"+valuesTotals[i];
+                list+=genreNames[i]+"\n  Copies sold: "+salesTotals[i]+"\n  Total sales value: $"+valuesTotals[i]+"\n";
             }
         }
         return list;
@@ -349,7 +427,7 @@ public class Company{
             }
             String[] categoryNames = {"- Varieties:", "- Design:", "- Scientific:"};
             for (int i = 0; i < 3; i++) {
-                list+=categoryNames[i]+"\n  Active subscriptions: "+activeSubs[i]+"\n  Total sales value: $"+valuesTotals[i];
+                list+=categoryNames[i]+"\n  Active subscriptions: "+activeSubs[i]+"\n  Total sales value: $"+valuesTotals[i]+"\n";
             }
         }
         return list;

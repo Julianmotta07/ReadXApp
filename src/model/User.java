@@ -1,5 +1,4 @@
 package model;
-import java.util.*;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -22,15 +21,15 @@ public abstract class User{
     }
 
     public String displayLibrary(){
-        String matriz="\n     0  |  1  |  2  |  3  |  4 \n";
+        String matrix="\n     0  |  1  |  2  |  3  |  4 \n";
         for (int i = 0; i < library.length; i++) {
-            matriz+=i+" ";
+            matrix+=i+" ";
             for (int j = 0; j < library[i].length; j++) {
-              matriz+="| "+(library[i][j] + " ");
+              matrix+="| "+(library[i][j] + " ");
             }
-            matriz+="\n";
+            matrix+="\n";
         }
-        return matriz;
+        return matrix;
     }
 
     public int getId(){
