@@ -6,14 +6,14 @@ public class PremiumUser extends User{
     private ArrayList<Book> books;
     private ArrayList<Magazine> magazines;
 
-    public PremiumUser(String name, int id){
+    public PremiumUser(String name, String id){
         super(name, id);
         books= new ArrayList<>();
         magazines= new ArrayList<>();
     }
 
     public String addBook(Book book){
-        String message="Book successfully purchased!.";
+        String message="\nBook successfully purchased!.";
         if (books.contains(book)) {
             message="Error: The user has already purchased this book.";
         } else {
@@ -23,7 +23,7 @@ public class PremiumUser extends User{
     }
 
     public String addMagazine(Magazine magazine){
-        String message="Magazine subscription successfully completed!.";
+        String message="\nMagazine subscription successfully completed!.";
         if (magazines.contains(magazine)) {
             message="Error: The user has already subscribed to this magazine.";
         } else {
@@ -32,7 +32,17 @@ public class PremiumUser extends User{
         return message;
     }
 
-    public String showLibrary(int pageNum){
+    public String removeMagazine(Magazine magazine){
+        String message="Magazine subscription successfully cancelled!.";
+        if (magazines.contains(magazine)){
+            magazines.remove(magazine);
+        } else {
+            message="Error: The user has not subscribed to this magazine.";
+        }
+        return message;
+    }
+
+    public String organizeLibrary(int pageNum){
         String library="Library of "+super.getName()+": \nPage "+(pageNum+1);
         ArrayList<Product> userProducts = new ArrayList<>();
         userProducts.addAll(books);

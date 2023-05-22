@@ -27,14 +27,10 @@ public class Book extends Product{
         copiesSold=0;
     }
 
-    public void setReview(String review){
-        this.review=review;
-    }
-
     public Genre getGenre(){
         return genre;
     }
-    
+
     public void setGenre(int genreOpt){
         switch(genreOpt){
             case 1:
@@ -57,11 +53,13 @@ public class Book extends Product{
         this.copiesSold=copiesSold;
     }
 
+    public void setReview(String review){
+        this.review=review;
+    }
+
     @Override
     public String toString(){
         return super.toString()+"Sale value: $"+ super.getValue() +"\n" +
-        "Review: "+ review+ "\n" +
-        "Genre: " + genre.name() + "\n" +
-        "Copies sold: "+ copiesSold+ "\n";
+        "Genre: " + genre.name() + "\n";
     }
 }

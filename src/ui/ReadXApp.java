@@ -3,44 +3,43 @@ import java.util.Scanner;
 import model.Company;
 import java.util.Calendar;
 
-public class ReactXApp {
+public class ReadXApp {
 
 	public static Company company;
     public static Scanner lector;
 
-	public ReactXApp(String name) {
+	public ReadXApp(String name) {
 		company = new Company(name);
 		lector = new Scanner(System.in);
 	}
 
 	public static void main(String[] args) {
-		ReactXApp objMain = new ReactXApp("ReactX");
+		ReadXApp objMain = new ReadXApp("ReadX");
 		objMain.menu();
 	}
 
     public void menu(){
         int option;
         do{
-            System.out.println("--------------Welcome to the menu------------");
-            System.out.println("---------------Select an option--------------");
-            System.out.println("1: Register user.............................");
-            System.out.println("2: Register product..........................");
-            System.out.println("3: Edit product..............................");
-            System.out.println("4: Delete product............................");
-            System.out.println("5: Generate objects..........................");
-            System.out.println("6: Buy book..................................");
-            System.out.println("7: Subscribe magazine........................");
-            System.out.println("8: Display my library........................");
-            System.out.println("9: Simulate reading session..................");
-            System.out.println("10: Report pages read per product type.......");
-            System.out.println("11: Report genre and category most read......");
-            System.out.println("12: Report Top 5 most read products..........");
-            System.out.println("13: Report total number sales and total sales"); 
-            System.out.println("    per genre................................");
-            System.out.println("14: Report active subscriptions number and...");
-            System.out.println("    total paid per category..................");
-            System.out.println("0: Exit......................................");
-            System.out.println("---------------------------------------------");
+            System.out.println("-------------------------WELCOME TO THE MENU-----------------------");
+            System.out.println("--------------------------Select an option-------------------------");
+            System.out.println("1: Register user...................................................");
+            System.out.println("2: Register bibliographic product..................................");
+            System.out.println("3: Edit bibliographic product......................................");
+            System.out.println("4: Delete bibliographic product....................................");
+            System.out.println("5: Generate objects................................................");
+            System.out.println("6: Buy book........................................................");
+            System.out.println("7: Subscribe magazine..............................................");
+            System.out.println("8: Unsubscribe magazine............................................");
+            System.out.println("9: Display my library..............................................");
+            System.out.println("10: Simulate reading session.......................................");
+            System.out.println("11: Report pages read per product type.............................");
+            System.out.println("12: Report genre and category most read............................");
+            System.out.println("13: Report Top 5 most read products per type.......................");
+            System.out.println("14: Report books sold number and total sales per genre............."); 
+            System.out.println("15: Report active subscriptions number and total paid per category.");
+            System.out.println("0: Exit............................................................");
+            System.out.println("-------------------------------------------------------------------");
             option=lector.nextInt();
             lector.nextLine();
             switch(option){
@@ -80,33 +79,38 @@ public class ReactXApp {
                     lector.nextLine();
                     break;
                 case 8:
-                    displayMyLibrary();
-                    break;
-                case 9:
-                    simulateReadingSession();
-                    break;
-                case 10:
-                    reportPagesReadPerProduct();
+                    unsubscribeMagazine();
                     System.out.println("Press Enter to return to the menu...");
                     lector.nextLine();
                     break;
+                case 9:
+                    displayMyLibrary();
+                    break;
+                case 10:
+                    simulateReadingSession();
+                    break;
                 case 11:
-                    reportGenreAndCategoryMostRead();
+                    reportPagesReadPerProductType();
                     System.out.println("Press Enter to return to the menu...");
                     lector.nextLine();
                     break;
                 case 12:
-                    reportTop5MostReadProductsPerType();
+                    reportGenreAndCategoryMostRead();
                     System.out.println("Press Enter to return to the menu...");
                     lector.nextLine();
                     break;
                 case 13:
-                    soldNumAndTotalPaidPerGenre();
+                    reportTop5MostReadProductsPerType();
                     System.out.println("Press Enter to return to the menu...");
                     lector.nextLine();
                     break;
                 case 14:
-                    actSubsNumAndTotalPaidPerCategory();
+                    reportSoldNumAndTotalPaidPerGenre();
+                    System.out.println("Press Enter to return to the menu...");
+                    lector.nextLine();
+                    break;
+                case 15:
+                    reportActSubsAndTotalPaidPerCategory();
                     System.out.println("Press Enter to return to the menu...");
                     lector.nextLine();
                     break;
@@ -123,8 +127,7 @@ public class ReactXApp {
         System.out.println("Enter name:");
         String name=lector.nextLine();
         System.out.println("Enter identification:");
-        int id=lector.nextInt();
-        lector.nextLine();
+        String id=lector.nextLine();
         System.out.println("Select user type \n 1: Regular \n 2: Premium");
         int userType=lector.nextInt();
         lector.nextLine();
@@ -191,6 +194,8 @@ public class ReactXApp {
     public void editProduct(){
         System.out.println("Enter identifier:");
         String id=lector.nextLine();
+        System.out.println("Enter new name:");
+        String name=lector.nextLine();
         System.out.println("Enter new pages number:");
         int pagesNum=lector.nextInt();
         lector.nextLine();
@@ -220,7 +225,7 @@ public class ReactXApp {
             int genreOpt=lector.nextInt();
             lector.nextLine();
 
-            String message= company.editProduct(id, pagesNum, date, url, value, review, genreOpt, 0, 0);
+            String message= company.editProduct(id, name, pagesNum, date, url, value, review, genreOpt);
             System.out.println(message);
 
         } else {
@@ -234,7 +239,7 @@ public class ReactXApp {
             int categoryOpt=lector.nextInt();
             lector.nextLine();
 
-            String message= company.editProduct(id, pagesNum, date, url, value, null, 0, issuanceFreqOpt, categoryOpt);
+            String message= company.editProduct(id, name, pagesNum, date, url, value, issuanceFreqOpt, categoryOpt);
             System.out.println(message);
         }
     }
@@ -254,8 +259,7 @@ public class ReactXApp {
 
     public void buyBook(){
         System.out.println("Enter user identification:");
-        int userId=lector.nextInt();
-        lector.nextLine();
+        String userId=lector.nextLine();
         System.out.println("Enter book identifier:");
         String bookId=lector.nextLine();
 
@@ -265,8 +269,7 @@ public class ReactXApp {
 
     public void subscribeMagazine(){
         System.out.println("Enter user identification:");
-        int userId=lector.nextInt();
-        lector.nextLine();
+        String userId=lector.nextLine();
         System.out.println("Enter magazine identifier:");
         String magazineId=lector.nextLine();
 
@@ -274,10 +277,19 @@ public class ReactXApp {
         System.out.println(message);
     }
 
+    public void unsubscribeMagazine(){
+        System.out.println("Enter user identification:");
+        String userId=lector.nextLine();
+        System.out.println("Enter magazine identifier:");
+        String magazineId=lector.nextLine();
+
+        String message= company.unsubscribeMagazine(userId, magazineId);
+        System.out.println(message);
+    }
+
     public void displayMyLibrary(){
         System.out.println("Enter user identification:");
-        int userId=lector.nextInt();
-        lector.nextLine();
+        String userId=lector.nextLine();
 
         int pageNum=0;
         boolean exit=false;
@@ -314,8 +326,7 @@ public class ReactXApp {
 
     public void simulateReadingSession(){
         System.out.println("Enter user identification:");
-        int userId=lector.nextInt();
-        lector.nextLine();
+        String userId=lector.nextLine();
 
         boolean exit=false;
         char pageOpt='S';
@@ -404,7 +415,7 @@ public class ReactXApp {
         } while (pageOpt=='L' && !exit);
     }
 
-    public void reportPagesReadPerProduct(){
+    public void reportPagesReadPerProductType(){
         String message= company.getPagesReadPerProductType();
         System.out.println(message);
     }
@@ -419,13 +430,13 @@ public class ReactXApp {
         System.out.println(message);
     }
 
-    public void soldNumAndTotalPaidPerGenre(){
+    public void reportSoldNumAndTotalPaidPerGenre(){
         String message= company.getSoldNumAndTotalPaidPerGenre();
         System.out.println(message);
     }
 
-    public void actSubsNumAndTotalPaidPerCategory(){
-        String message= company.getActSubsNumAndTotalPaidPerCategory();
+    public void reportActSubsAndTotalPaidPerCategory(){
+        String message= company.getActSubsAndTotalPaidPerCategory();
         System.out.println(message);
     }
 }

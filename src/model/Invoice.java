@@ -1,5 +1,6 @@
 package model;
 import java.util.Calendar;
+import java.util.Date;
 
 public class Invoice{
 
@@ -25,5 +26,12 @@ public class Invoice{
     public Product getProduct(){
         return product;
     }
-    
+
+    public String toString(){
+        Date date = operationDate.getTime();
+        return "User name: " + user.getName() + "\n" +
+        "Product name: " + product.getName() + "\n" +
+        "Operation date: " + date + "\n" +
+        "Amount paid: $" + amountPaid + "\n";
+    }
 }

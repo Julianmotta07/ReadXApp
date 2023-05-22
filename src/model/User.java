@@ -1,19 +1,18 @@
 package model;
 import java.util.Calendar;
-import java.util.Date;
 
 public abstract class User{
 
     //attribute
     private String name;
-    private int id;
+    private String id;
     private Calendar vinculationDate;
     private String[][] library;
 
     //constant
     private final int LIBRARY_SIZE=5;
 
-    public User(String name, int id){
+    public User(String name, String id){
         this.name=name;
         this.id=id;
         vinculationDate = Calendar.getInstance();
@@ -32,7 +31,7 @@ public abstract class User{
         return matrix;
     }
 
-    public int getId(){
+    public String getId(){
         return id;
     }
 
@@ -45,9 +44,7 @@ public abstract class User{
     }
 
     public String toString(){
-        Date date = vinculationDate.getTime();
         return "Name: " + name + "\n" +
-        "ID: " + id + "\n" +
-        "Vinculation date: " + date + "\n";
+        "ID: " + id + "\n";
     }
 }

@@ -37,20 +37,6 @@ public class Magazine extends Product{
         activeSubscriptions=0;
     }
 
-    public void setIssuaceFreq(int issuanceFreqOpt){
-        switch(issuanceFreqOpt){
-            case 1:
-                this.issuanceFreq=IssuanceFrequency.WEEKLY;
-                break;
-            case 2:
-                this.issuanceFreq=IssuanceFrequency.MONTHLY;
-                break;
-            case 3:
-                this.issuanceFreq=IssuanceFrequency.YEARLY;
-                break;
-        }
-    }
-
     public Category getCategory(){
         return category;
     }
@@ -73,15 +59,27 @@ public class Magazine extends Product{
        return activeSubscriptions;
     }
 
-    public void setActiveSubcritions(int activeSubscriptions){
+    public void setActiveSubscriptions(int activeSubscriptions){
         this.activeSubscriptions=activeSubscriptions;
+    }
+
+    public void setIssuanceFreq(int issuanceFreqOpt){
+        switch(issuanceFreqOpt){
+            case 1:
+                this.issuanceFreq=IssuanceFrequency.WEEKLY;
+                break;
+            case 2:
+                this.issuanceFreq=IssuanceFrequency.MONTHLY;
+                break;
+            case 3:
+                this.issuanceFreq=IssuanceFrequency.YEARLY;
+                break;
+        }
     }
 
     @Override
     public String toString(){
         return super.toString()+"Subscription value: $"+ super.getValue() +"\n" +
-        "Issuance frequency: "+ issuanceFreq.name() + "\n" +
-        "Category: " + category.name() + "\n" +
-        "Active subscriptions: "+ activeSubscriptions+ "\n";
+        "Category: " + category.name() + "\n";
     }
 }

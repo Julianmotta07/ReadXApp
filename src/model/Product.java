@@ -1,6 +1,5 @@
 package model;
 import java.util.Calendar;
-import java.util.Date;
 
 public abstract class Product{
 
@@ -31,20 +30,12 @@ public abstract class Product{
         return name;
     }
 
-    public double getValue(){
-        return value;
+    public void setName(String name){
+        this.name=name;
     }
 
     public int getPagesNumber(){
         return pagesNumber;
-    }
-
-    public int getPagesRead(){
-        return pagesRead;
-    }
-
-    public void setPagesRead(int pagesRead){
-        this.pagesRead=pagesRead;
     }
 
     public void setPagesNumber(int pagesNumber){
@@ -58,21 +49,30 @@ public abstract class Product{
     public void setPublicationDate(Calendar publicationDate){
         this.publicationDate=publicationDate;
     }
-    
+
     public void setUrl(String url){
         this.url=url;
+    }
+
+    public double getValue(){
+        return value;
     }
 
     public void setValue(double value){
         this.value=value;
     }
 
+    public int getPagesRead(){
+        return pagesRead;
+    }
+
+    public void setPagesRead(int pagesRead){
+        this.pagesRead=pagesRead;
+    }
+
     public String toString(){
-        Date date = publicationDate.getTime();
         return "Name: " + name + "\n" +
-        "Pages number: " + pagesNumber + "\n" +
-        "Publication date: " + date + "\n" +
-        "Repository URL: " + url + " \n" +
-        "Accumulated pages read: " + pagesRead + " \n";
+        "ID: " + id + "\n" +
+        "Pages number: " + pagesNumber + "\n";
     }
 }

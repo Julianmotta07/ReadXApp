@@ -12,7 +12,7 @@ public class RegularUser extends User implements Announceable{
     Book[] books;
     Magazine[] magazines;
 
-    public RegularUser(String name, int id){
+    public RegularUser(String name, String id){
         super(name, id);
         books= new Book[MAX_BOOKS]; 
         magazines= new Magazine[MAX_MAGAZINES]; 
@@ -21,7 +21,7 @@ public class RegularUser extends User implements Announceable{
     }
 
     public String addBook(Book book){
-        String message="Book successfully purchased!.";
+        String message="\nBook successfully purchased!.";
         if (availableBooks==0){
             message="Error: The user has reached his book limit.";
         }   
@@ -40,7 +40,7 @@ public class RegularUser extends User implements Announceable{
     }
 
     public String addMagazine(Magazine magazine){
-        String message="Magazine subscription successfully completed!.";
+        String message="\nMagazine subscription successfully completed!.";
         if (availableMagazines==0){
             message="Error: The user has reached his magazine limit.";
         }   
@@ -58,7 +58,23 @@ public class RegularUser extends User implements Announceable{
         return message;
     }
 
-    public String showLibrary(int pageNum){
+    public String removeMagazine(Magazine magazine){
+        String message="Magazine subscription successfully cancelled!.";
+        boolean finish=false;
+        for (int i=0; i <magazines.length && !finish; i++){
+            if (magazines[i]!=null && magazines[i].getId().equals(magazine.getId())){
+                magazines[i]=null;
+                availableMagazines=availableMagazines+1;
+                finish=true;
+            }  
+        }
+        if (!finish){
+            message="Error: The user has not subscribed to this magazine.";
+        }
+        return message;
+    }
+
+    public String organizeLibrary(int pageNum){
         String library="Library of "+super.getName()+": \nPage "+(pageNum+1);
         ArrayList<Product> userProducts = new ArrayList<>();
         for (int i=0; i < books.length; i++){

@@ -18,7 +18,7 @@ public class Company{
         invoices= new ArrayList<>();
     }
 
-    public String addUser(String name, int id, int userType){
+    public String addUser(String name, String id, int userType){
         String message="";
         if (searchUser(id)!=null){
             message="Error: A user with the entered ID already exists.";
@@ -56,25 +56,38 @@ public class Company{
         return message;
     }
 
-    public String editProduct(String id, int pagesNum, Calendar publicationDate, String url, double value, String review, int genreOpt, int issuanceFreqOpt, int categoryOpt) {
-        String message = "Product successfully updated.";
-        Product product = searchProduct(id);
+    public String editProduct(String id, String name, int pagesNum, Calendar publicationDate, String url, double value, String review, int genreOpt){
+        String message="Book successfully updated.";
+        Product product=searchProduct(id);
         if (product==null) {
-            message = "Error: A product with the entered ID does not exist.";
+            message="Error: A book with the entered ID does not exist.";
         } else {
+            product.setName(name);
             product.setPagesNumber(pagesNum);
             product.setPublicationDate(publicationDate);
             product.setUrl(url);
             product.setValue(value);
-            if (product instanceof Book) {
-                Book book = (Book) product;
-                book.setReview(review);
-                book.setGenre(categoryOpt);
-            } else {
-                Magazine magazine = (Magazine) product;
-                magazine.setIssuaceFreq(issuanceFreqOpt);
-                magazine.setCategory(categoryOpt);
-            }
+            Book book = (Book) product;
+            book.setReview(review);
+            book.setGenre(genreOpt);
+        }
+        return message;
+    }
+
+    public String editProduct(String id, String name, int pagesNum, Calendar publicationDate, String url, double value, int issuanceFreqOpt, int categoryOpt){
+        String message="Magazine successfully updated.";
+        Product product=searchProduct(id);
+        if (product==null) {
+            message="Error: A magazine with the entered ID does not exist.";
+        } else {
+            product.setName(name);
+            product.setPagesNumber(pagesNum);
+            product.setPublicationDate(publicationDate);
+            product.setUrl(url);
+            product.setValue(value);
+            Magazine magazine = (Magazine) product;
+            magazine.setIssuanceFreq(issuanceFreqOpt);
+            magazine.setCategory(categoryOpt);
         }
         return message;
     }
@@ -91,21 +104,52 @@ public class Company{
     }
 
     public String generateObjects(){
-        RegularUser regularUser = new RegularUser("Regular user test", 12345);
-        PremiumUser premiumUser = new PremiumUser("Premium user test", 12345);
-        Book book = new Book("A01", "Book test", 0, Calendar.getInstance(), "test.png", 0, "Review text", 1);
-        Magazine magazine = new Magazine("A01", "Magazine test", 0, Calendar.getInstance(), "test.png", 0, 1, 1);
-        String message = regularUser.toString() + "\n" + premiumUser.toString() + "\n" + book.toString() + "\n" + magazine.toString();
+        String message="Generated objects: \n";
+        //Generates random 5-digit IDs
+        int randomID1 = (int) (Math.random() * 90000) + 10000;
+        String regularID = String.valueOf(randomID1);
+        int randomID2 = (int) (Math.random() * 90000) + 10000;
+        String premiumID = String.valueOf(randomID2);
+        //Generates 3-character hexadecimal ID
+        int randomID3 = (int) (Math.random() * 4096);
+        String bookID = Integer.toHexString(randomID3).toUpperCase();
+        if (bookID.length() < 3) {
+            bookID = "0" + bookID;
+        }
+        //Creates a 3-character alphanumeric ID
+        String MagazineID ="";
+        for (int i = 0; i < 3; i++) {
+            int randomNumber = (int) (Math.random() * 36);
+            char randomChar;
+            if (randomNumber < 10) {
+                randomChar = (char) ('0' + randomNumber); // Numeric digit
+            } else {
+                randomChar = (char) ('A' + (randomNumber - 10)); // Alphabetic character
+            }
+            MagazineID+=randomChar;
+        }
+        //Creates the objects
+        RegularUser regularUser = new RegularUser("Regular user test", regularID);
+        PremiumUser premiumUser = new PremiumUser("Premium user test", premiumID);
+        Book book = new Book(bookID, "Book test", 100, Calendar.getInstance(), "test.png", 15, "Review text", 1);
+        Magazine magazine = new Magazine(MagazineID, "Magazine test", 100, Calendar.getInstance(), "test.png", 10, 1, 1);
+        //Adds the objetcs
+        users.add(regularUser);
+        users.add(premiumUser);
+        products.add(book);
+        products.add(magazine);
+        //Returns the information of each object
+        message +="\n"+ regularUser.toString() + "\n" + premiumUser.toString() + "\n" + book.toString() + "\n" + magazine.toString();
         return message;
     }
 
-    public String buyBook(int userId, String bookId){
+    public String buyBook(String userId, String bookId){
         String message="";
         User user = searchUser(userId);
         Product product = searchProduct(bookId);
         if (user==null){
             message="Error: A user with the entered ID does not exist."; 
-        } else if (product==null){
+        } else if (product==null || product instanceof Magazine ){
             message="Error: A book with the entered ID does not exist.";
         } else {
             Book book = (Book) product;
@@ -116,22 +160,23 @@ public class Company{
             PremiumUser premiumUser = (PremiumUser) user;
             message = premiumUser.addBook(book);
             }
-            if (message.equals("Book successfully purchased!.")){
+            if (message.equals("\nBook successfully purchased!.")){
                 Invoice newInvoice= new Invoice(book.getValue(), user, product);
                 invoices.add(newInvoice);
                 book.setCopiesSold(book.getCopiesSold()+1);
+                message+="\n\nInvoice: \n"+newInvoice.toString();
             }
         }
         return message;
     }
 
-    public String subscribeMagazine(int userId, String magazineId){
+    public String subscribeMagazine(String userId, String magazineId){
         String message="";
         User user = searchUser(userId);
         Product product = searchProduct(magazineId);
         if (user==null){
             message="Error: A user with the entered ID does not exist."; 
-        } else if (product==null){
+        } else if (product==null || product instanceof Book){
             message="Error: A magazine with the entered ID does not exist.";
         } else {
             Magazine magazine = (Magazine) product;
@@ -142,16 +187,41 @@ public class Company{
             PremiumUser premiumUser = (PremiumUser) user;
             message = premiumUser.addMagazine(magazine);
             }
-            if (message.equals("Magazine subscription successfully completed!.")){
+            if (message.equals("\nMagazine subscription successfully completed!.")){
                 Invoice newInvoice= new Invoice(magazine.getValue(), user, product);
                 invoices.add(newInvoice);
-                magazine.setActiveSubcritions(magazine.getActiveSubscriptions()+1);
+                magazine.setActiveSubscriptions(magazine.getActiveSubscriptions()+1);
+                message+="\n\nInvoice: \n"+newInvoice.toString();
             }
         }
         return message;
-    } 
+    }
     
-    public String displayMyLibrary(int userId, int pageNum){
+    public String unsubscribeMagazine(String userId, String magazineId){
+        String message="";
+        User user = searchUser(userId);
+        Product product = searchProduct(magazineId);
+        if (user==null){
+            message="Error: A user with the entered ID does not exist."; 
+        } else if (product==null || product instanceof Book){
+            message="Error: A magazine with the entered ID does not exist.";
+        } else {
+            Magazine magazine = (Magazine) product;
+            if (user instanceof RegularUser){
+            RegularUser regularUser = (RegularUser) user;
+            message = regularUser.removeMagazine(magazine);
+            } else {
+            PremiumUser premiumUser = (PremiumUser) user;
+            message = premiumUser.removeMagazine(magazine);
+            }
+            if (message.equals("Magazine subscription successfully cancelled!.")){
+                magazine.setActiveSubscriptions(magazine.getActiveSubscriptions()-1);
+            }
+        }
+        return message;
+    }
+    
+    public String displayMyLibrary(String userId, int pageNum){
         String message="";
         User user = searchUser(userId);
         if (user==null){
@@ -159,16 +229,16 @@ public class Company{
         } else {
             if (user instanceof RegularUser) {
                 RegularUser regularUser = (RegularUser) user;
-                message+=regularUser.showLibrary(pageNum);
+                message+=regularUser.organizeLibrary(pageNum);
             } else {
                 PremiumUser premiumUser = (PremiumUser) user;
-                message+=premiumUser.showLibrary(pageNum);
+                message+=premiumUser.organizeLibrary(pageNum);
             } 
         }    
         return message;
     }
 
-    public String simulateReadingSesion(int userId, String productId, char pageOpt, int page, int pagesCount){
+    public String simulateReadingSesion(String userId, String productId, char pageOpt, int page, int pagesCount){
         String message="Reading session in progress... \n";
         User user = searchUser(userId);
         Product product=null;
@@ -200,7 +270,7 @@ public class Company{
         return message;
     }
 
-    public String simulateReadingSesion(int userId, int xCoord, int yCoord, char pageOpt, int page, int pagesCount){
+    public String simulateReadingSesion(String userId, int xCoord, int yCoord, char pageOpt, int page, int pagesCount){
         String message="Reading session in progress... \n";
         User user = searchUser(userId);
         String[][] matrix = user.getLibrary();
@@ -302,23 +372,24 @@ public class Company{
             if (genres[maxIndexG] > 0){
                 message+=genreNames[maxIndexG]+"\n  Pages read: "+genres[maxIndexG];
             } else {
-                message+="";
+                message+="No books have been read yet.";
             }
             message+="\n- Most read category: ";
             if (categories[maxIndexC] > 0) {
                 message+=categoryNames[maxIndexC]+"\n  Pages read: "+categories[maxIndexC];
             } else {
-                message+="";
+                message+="No magazines have been read yet.";
             }
         }
         return message;
     }
 
     public String getTop5MostReadProductsPerType(){
-        String list="";
+        String message="";
         if (products.isEmpty()){
-            list="Error: No products registered yet.";
+            message="Error: No products registered yet.";
         } else {
+            //Creates a list for each type of product and adds them to the list.
             ArrayList<Book> booksList = new ArrayList<>();
             ArrayList<Magazine> magazinesList = new ArrayList<>();
             for (int i = 0; i < products.size(); i++) {
@@ -333,40 +404,53 @@ public class Company{
                     }
                 }
             }
-            for (int i = 0; i < booksList.size(); i++) {
-                for (int j = i + 1; j < booksList.size(); j++) {
-                    Book book1 = booksList.get(i);
-                    Book book2 = booksList.get(j);
-                    if (book2.getPagesRead() > book1.getPagesRead()) {
-                        booksList.set(i, book2);
-                        booksList.set(j, book1);
-                    }
-                }
-            }
-            for (int i = 0; i < magazinesList.size(); i++) {
-                for (int j = i + 1; j < magazinesList.size(); j++) {
-                    Magazine magazine1 = magazinesList.get(i);
-                    Magazine magazine2 = magazinesList.get(j);
-                    if (magazine2.getPagesRead() > magazine1.getPagesRead()) {
-                        magazinesList.set(i, magazine2);
-                        magazinesList.set(j, magazine1);
-                    }
-                }
-            }
-            String topBooks="Top 5 most read books: \n"; 
-            String topMagazines="Top 5 most read magazines: \n";
-            for (int i = 0; i < Math.min(5, booksList.size()); i++) {
-                Book book = booksList.get(i);
-                topBooks+="-"+(i+1)+". "+book.getName()+"\n";
-            }
             
-            for (int i = 0; i < Math.min(5, magazinesList.size()); i++) {
-                Magazine magazine = magazinesList.get(i);
-                topMagazines+="-"+(i+1)+". "+magazine.getName()+"\n";
+            String topBooks="Top 5 most read books: \n"; 
+            if (booksList.isEmpty()){
+                topBooks+="No books have been read yet. \n";
+            } else {
+                //Sorts the list of books according to the number of pages read.
+                for (int i = 0; i < booksList.size(); i++) {
+                    for (int j = i + 1; j < booksList.size(); j++) {
+                        Book book1 = booksList.get(i);
+                        Book book2 = booksList.get(j);
+                        if (book2.getPagesRead() > book1.getPagesRead()) {
+                            booksList.set(i, book2);
+                            booksList.set(j, book1);
+                        }
+                    }
+                }
+                //Gets the name of the first books in the list
+                for (int i = 0; i < Math.min(5, booksList.size()); i++) {
+                    Book book = booksList.get(i);
+                    topBooks+="-"+(i+1)+". "+book.getName()+"\n";
+                }
             }
-            list=topBooks+topMagazines;
+
+            String topMagazines="Top 5 most read magazines: \n";
+            if (magazinesList.isEmpty()){
+                topMagazines+="No magazines have been read yet. \n";
+            } else {
+                //Sorts the list of magazines according to the number of pages read.
+                for (int i = 0; i < magazinesList.size(); i++) {
+                    for (int j = i + 1; j < magazinesList.size(); j++) {
+                        Magazine magazine1 = magazinesList.get(i);
+                        Magazine magazine2 = magazinesList.get(j);
+                        if (magazine2.getPagesRead() > magazine1.getPagesRead()) {
+                            magazinesList.set(i, magazine2);
+                            magazinesList.set(j, magazine1);
+                        }
+                    }
+                }
+                //Gets the name of the first magazines in the list
+                for (int i = 0; i < Math.min(5, magazinesList.size()); i++) {
+                    Magazine magazine = magazinesList.get(i);
+                    topMagazines+="-"+(i+1)+". "+magazine.getName()+"\n";
+                }
+            }
+            message=topBooks+topMagazines;
         }
-        return list;
+        return message;
     }
 
     public String getSoldNumAndTotalPaidPerGenre(){
@@ -401,7 +485,7 @@ public class Company{
         return list;
     }
 
-    public String getActSubsNumAndTotalPaidPerCategory(){
+    public String getActSubsAndTotalPaidPerCategory(){
         String list="";
         if (invoices.isEmpty()){
             list="Error: No products have been sold yet";
@@ -433,12 +517,12 @@ public class Company{
         return list;
     }
 
-    private User searchUser(int id){
+    private User searchUser(String id){
         User userFound=null;
         boolean found=false;
         for (int i=0; i < users.size() && !found; i++) {
             User user=users.get(i);
-            if (user.getId()==id) {
+            if (user.getId().equals(id)){
                 userFound=user;
                 found=true;
             }
