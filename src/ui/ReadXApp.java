@@ -18,6 +18,9 @@ public class ReadXApp {
 		objMain.menu();
 	}
 
+    /**
+     * Displays the menu and requests an int value assigned to an option to execute the corresponding method.
+     */
     public void menu(){
         int option;
         do{
@@ -123,6 +126,9 @@ public class ReadXApp {
         } while (option!=0);
     }
 
+    /**
+     * Requests the data for a new user to invoke the method that regists it and prints the message it returns.
+     */
     public void registerUser(){
         System.out.println("Enter name:");
         String name=lector.nextLine();
@@ -136,6 +142,9 @@ public class ReadXApp {
         System.out.println(message);
     }
 
+    /**
+     * Requests the data for a new product to invoke the method that regists it and prints the message it returns.
+     */
     public void registerProduct(){
         System.out.println("Enter name:");
         String name=lector.nextLine();
@@ -191,102 +200,143 @@ public class ReadXApp {
         }
     }
 
+    /**
+     * Invokes the method that obtains the company's list of products and prints the message it returns.
+     * If the company has products, requests the identifier of a product and its new data to invoke the method that updates its information and prints the message it returns.
+     */
     public void editProduct(){
-        System.out.println("Enter identifier:");
-        String id=lector.nextLine();
-        System.out.println("Enter new name:");
-        String name=lector.nextLine();
-        System.out.println("Enter new pages number:");
-        int pagesNum=lector.nextInt();
-        lector.nextLine();
-
-        System.out.println("Enter new publication date (dd/mm/yyyy):");
-        String input = lector.nextLine();
-        String[] parts = input.split("/");
-        int day = Integer.parseInt(parts[0]);
-        int month = Integer.parseInt(parts[1]) - 1;
-        int year = Integer.parseInt(parts[2]);
-        Calendar date = Calendar.getInstance();
-        date.set(year, month, day);
-
-        System.out.println("Enter new repository URL:");
-        String url=lector.nextLine();
-        System.out.println("Select product type \n 1: Book \n 2: Magazine");
-        int productType=lector.nextInt();
-        lector.nextLine();
-
-        if (productType==1){
-            System.out.println("Enter new sale value:");
-            double value=lector.nextDouble();
-            lector.nextLine();
-            System.out.println("Enter new short review:");
-            String review=lector.nextLine();
-            System.out.println("Select new genre \n 1: Sci-fi \n 2: Fantasy \n 3: Historical novel");
-            int genreOpt=lector.nextInt();
+        String list= company.showProductList();
+        System.out.println(list);
+        if(!list.equals("Error: No products registered yet.")){
+            System.out.println("Enter identifier of the product to edit:");
+            String id=lector.nextLine();
+            System.out.println("Enter new name:");
+            String name=lector.nextLine();
+            System.out.println("Enter new pages number:");
+            int pagesNum=lector.nextInt();
             lector.nextLine();
 
-            String message= company.editProduct(id, name, pagesNum, date, url, value, review, genreOpt);
-            System.out.println(message);
+            System.out.println("Enter new publication date (dd/mm/yyyy):");
+            String input = lector.nextLine();
+            String[] parts = input.split("/");
+            int day = Integer.parseInt(parts[0]);
+            int month = Integer.parseInt(parts[1]) - 1;
+            int year = Integer.parseInt(parts[2]);
+            Calendar date = Calendar.getInstance();
+            date.set(year, month, day);
 
-        } else {
-            System.out.println("Enter new subscription value:");
-            double value=lector.nextDouble();
-            lector.nextLine();
-            System.out.println("Select new issuance frequency: \n 1: Weekly \n 2: Monthly \n 3: Yearly");
-            int issuanceFreqOpt=lector.nextInt();
-            lector.nextLine();
-            System.out.println("Select new category: \n 1: Varieties \n 2: Design \n 3: Scientific");
-            int categoryOpt=lector.nextInt();
+            System.out.println("Enter new repository URL:");
+            String url=lector.nextLine();
+            System.out.println("Select product type \n 1: Book \n 2: Magazine");
+            int productType=lector.nextInt();
             lector.nextLine();
 
-            String message= company.editProduct(id, name, pagesNum, date, url, value, issuanceFreqOpt, categoryOpt);
+            if (productType==1){
+                System.out.println("Enter new sale value:");
+                double value=lector.nextDouble();
+                lector.nextLine();
+                System.out.println("Enter new short review:");
+                String review=lector.nextLine();
+                System.out.println("Select new genre \n 1: Sci-fi \n 2: Fantasy \n 3: Historical novel");
+                int genreOpt=lector.nextInt();
+                lector.nextLine();
+
+                String message= company.editProduct(id, name, pagesNum, date, url, value, review, genreOpt);
+                System.out.println(message);
+
+            } else {
+                System.out.println("Enter new subscription value:");
+                double value=lector.nextDouble();
+                lector.nextLine();
+                System.out.println("Select new issuance frequency: \n 1: Weekly \n 2: Monthly \n 3: Yearly");
+                int issuanceFreqOpt=lector.nextInt();
+                lector.nextLine();
+                System.out.println("Select new category: \n 1: Varieties \n 2: Design \n 3: Scientific");
+                int categoryOpt=lector.nextInt();
+                lector.nextLine();
+
+                String message= company.editProduct(id, name, pagesNum, date, url, value, issuanceFreqOpt, categoryOpt);
+                System.out.println(message);
+            }
+        }
+    }
+
+    /**
+     * Invokes the method that obtains the company's list of products and prints the message it returns.
+     * If the company has products, requests the identifier of a product to invoke the method that deletes it from the company's product list and prints the message it returns.
+     */
+    public void deleteProduct(){
+        String list= company.showProductList();
+        System.out.println(list);
+        if (!list.equals("Error: No products registered yet.")){
+            System.out.println("Enter identifier of the product to delete:");
+            String id=lector.nextLine();
+            String message= company.deleteProduct(id);
             System.out.println(message);
         }
     }
 
-    public void deleteProduct(){
-        System.out.println("Enter identifier:");
-        String id=lector.nextLine();
-
-        String message= company.deleteProduct(id);
-        System.out.println(message);
-    }
-
+    /**
+     * Invokes the method that generates an object for each type and prints their information.
+     */
     public void generateObjects(){
         String message= company.generateObjects();
         System.out.println(message);
     }
 
+    /**
+     * Requests the identification of a user and the identifier of the book he/she is going to buy, invokes the method that executes the operation with this data and prints the message it returns.
+     */
     public void buyBook(){
         System.out.println("Enter user identification:");
         String userId=lector.nextLine();
-        System.out.println("Enter book identifier:");
-        String bookId=lector.nextLine();
-
-        String message= company.buyBook(userId, bookId);
+        String message= company.buyBook(userId, null);
         System.out.println(message);
+        if (!message.equals("Error: A user with the entered ID does not exist.")){
+            System.out.println("Enter identifier of the book to buy:");
+            String bookId=lector.nextLine();
+            message= company.buyBook(userId, bookId);
+            System.out.println(message);
+        }
     }
 
+    /**
+     * Requests the identification of a user and the identifier of the magazine he/she is going to subscribe, invokes the method that executes the operation with this data and prints the message it returns.
+     */
     public void subscribeMagazine(){
         System.out.println("Enter user identification:");
         String userId=lector.nextLine();
-        System.out.println("Enter magazine identifier:");
-        String magazineId=lector.nextLine();
-
-        String message= company.subscribeMagazine(userId, magazineId);
+        String message= company.subscribeMagazine(userId, null);
         System.out.println(message);
+        if (!message.equals("Error: A user with the entered ID does not exist.")){
+            System.out.println("Enter identifier of the magazine to subscribe:");
+            String magazineId=lector.nextLine();
+            message= company.subscribeMagazine(userId, magazineId);
+            System.out.println(message);
+        }
     }
 
+    /**
+     * Requests the identification of a user and the identifier of the magazine he/she is going to unsubscribe, invokes the method that executes the operation with this data and prints the message it returns.
+     */
     public void unsubscribeMagazine(){
         System.out.println("Enter user identification:");
         String userId=lector.nextLine();
-        System.out.println("Enter magazine identifier:");
-        String magazineId=lector.nextLine();
-
-        String message= company.unsubscribeMagazine(userId, magazineId);
+        String message= company.unsubscribeMagazine(userId, null);
         System.out.println(message);
+        if (!message.equals("Error: A user with the entered ID does not exist.") && !message.equals("Error: The user has not subscribed to any magazine.")){
+            System.out.println("Enter identifier of the magazine to unsubscribe:");
+            String magazineId=lector.nextLine();
+            message= company.unsubscribeMagazine(userId, magazineId);
+            System.out.println(message);
+        }
     }
 
+    /**
+     * Requests the identification of a user and prints his/her library.
+     * Provides and requests options to navigate through the library pages.
+     * Continues to display the library until the user decides to exit.
+     */
     public void displayMyLibrary(){
         System.out.println("Enter user identification:");
         String userId=lector.nextLine();
@@ -324,6 +374,12 @@ public class ReadXApp {
         } while (!exit);
     }
 
+    /**
+     * Requests the identification of a user and prints his/her library.
+     * Provides and requests options to navigate through the library pages and select a product for reading.
+     * Provides and requests options to navigate within the reading session and return to the library.
+     * Continues to display the library until the user decides to exit.
+     */
     public void simulateReadingSession(){
         System.out.println("Enter user identification:");
         String userId=lector.nextLine();
@@ -415,26 +471,41 @@ public class ReadXApp {
         } while (pageOpt=='L' && !exit);
     }
 
+    /**
+     * Invokes the method that obtains the number of pages read for each type of product and prints the message it returns.
+     */
     public void reportPagesReadPerProductType(){
         String message= company.getPagesReadPerProductType();
         System.out.println(message);
     }
 
+    /**
+     * Invokes the method that obtains the name and number of pages read of the most read genre and category and prints the message it returns
+     */
     public void reportGenreAndCategoryMostRead(){
         String message= company.getGenreAndCategoryMostRead();
         System.out.println(message);
     }
 
+    /**
+     * Invokes the method that obtains the top 5 most read products for each type and prints the message it returns.
+     */
     public void reportTop5MostReadProductsPerType(){
         String message= company.getTop5MostReadProductsPerType();
         System.out.println(message);
     }
 
+    /**
+     * Invokes the method that obtains the number of copies sold and the total sales value for each type of book and prints the message it returns.
+     */
     public void reportSoldNumAndTotalPaidPerGenre(){
         String message= company.getSoldNumAndTotalPaidPerGenre();
         System.out.println(message);
     }
 
+    /**
+     * Invokes the method that obtains the number of active subscriptions and the total value paid in subscriptions for each magazine category and prints the message it returns.
+     */
     public void reportActSubsAndTotalPaidPerCategory(){
         String message= company.getActSubsAndTotalPaidPerCategory();
         System.out.println(message);

@@ -1,5 +1,10 @@
 package model;
 
+/**
+ * Enum representing the category of a magazine.
+ */
 public enum Category {
-    VARIETIES, DESIGN, SCIENTIFIC;
+    VARIETIES, // Magazine category: Varieties
+    DESIGN, // Magazine category: Design
+    SCIENTIFIC; // Magazine category: Scientific
 }

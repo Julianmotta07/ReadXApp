@@ -3,15 +3,26 @@ import java.util.*;
 
 public class RegularUser extends User implements Announceable{
 
+    //Attributes
     private int availableBooks;
     private int availableMagazines;
 
+    //Constants
     private final int MAX_BOOKS=5;
     private final int MAX_MAGAZINES=2;
 
+    //Relations
     Book[] books;
     Magazine[] magazines;
 
+    /**
+	 * Constructor for the RegularUser class.
+	 * 
+	 * <br>post:</br> A new instance of RegularUser class is created.
+	 *
+	 * @param name The name of the regular user.
+	 * @param id The identification of the regular user.
+	 */
     public RegularUser(String name, String id){
         super(name, id);
         books= new Book[MAX_BOOKS]; 
@@ -20,6 +31,12 @@ public class RegularUser extends User implements Announceable{
         availableMagazines=2;
     }
 
+    /**
+	 * Adds a book to the regular user's book array.
+	 *
+	 * @param book The book to be added.
+     * @return A message indicating the result of the operation.
+	 */
     public String addBook(Book book){
         String message="\nBook successfully purchased!.";
         if (availableBooks==0){
@@ -32,13 +49,19 @@ public class RegularUser extends User implements Announceable{
                 finish=true;
             } else if (books[i]==null) {
                 books[i]=book;
-                availableBooks=availableBooks-1;
+                availableBooks--;
                 finish=true;
             }  
         }
         return message;
     }
 
+    /**
+	 * Adds a magazine to the regular user's magazine array.
+	 *
+	 * @param magazine The magazine to be added.
+     * @return A message indicating the result of the operation.
+	 */
     public String addMagazine(Magazine magazine){
         String message="\nMagazine subscription successfully completed!.";
         if (availableMagazines==0){
@@ -51,20 +74,26 @@ public class RegularUser extends User implements Announceable{
                 finish=true;
             } else if (magazines[i]==null) {
                 magazines[i]=magazine;
-                availableMagazines=availableMagazines-1;
+                availableMagazines--;
                 finish=true;
             }  
         }
         return message;
     }
 
+    /**
+	 * Removes a magazine subscription from the regular user's magazine array.
+	 *
+	 * @param magazine The magazine to be removed.
+     * @return A message indicating the result of the operation.
+	 */
     public String removeMagazine(Magazine magazine){
         String message="Magazine subscription successfully cancelled!.";
         boolean finish=false;
         for (int i=0; i <magazines.length && !finish; i++){
             if (magazines[i]!=null && magazines[i].getId().equals(magazine.getId())){
                 magazines[i]=null;
-                availableMagazines=availableMagazines+1;
+                availableMagazines++;
                 finish=true;
             }  
         }
@@ -74,19 +103,27 @@ public class RegularUser extends User implements Announceable{
         return message;
     }
 
-    public String organizeLibrary(int pageNum){
-        String library="Library of "+super.getName()+": \nPage "+(pageNum+1);
+    /**
+     * Generates the display of the regular user's library based on the specified page number.
+     * 
+     * @param pageNum The page number to generate the library display for.
+     * @return A string representing the library display.
+     */
+    public String showLibrary(int pageNum){
         ArrayList<Product> userProducts = new ArrayList<>();
+        // Collect all books into userProducts
         for (int i=0; i < books.length; i++){
             if(books[i]!=null){
                 userProducts.add(books[i]);
             }
         }
+        // Collect all magazines into userProducts
         for (int i=0; i < magazines.length; i++){
             if(magazines[i]!=null){
                 userProducts.add(magazines[i]);
             }
         }
+        // Sort userProducts based on publication date
         for (int i = 0; i < userProducts.size(); i++) {
             for (int j = i + 1; j < userProducts.size(); j++) {
                 Product product1 = userProducts.get(i);
@@ -97,24 +134,17 @@ public class RegularUser extends User implements Announceable{
                 }
             }
         }
-
-        int startIndex = pageNum * 25;
-        int endIndex = Math.min(startIndex + 25, userProducts.size());
-
-        for (int i = 0; i < super.getLibrary().length; i++) {
-            for (int j = 0; j < super.getLibrary()[i].length; j++) {
-                if (i * super.getLibrary().length + j < endIndex - startIndex) {
-                    Product product = userProducts.get(startIndex + i * super.getLibrary().length + j);
-                    super.getLibrary()[i][j] = product.getId();
-                } else {
-                    super.getLibrary()[i][j] = "___";
-                }
-            }
-        }
-        library += super.displayLibrary();
+        // Call fillLibrary to generate the library display based on userProducts and pageNum
+        String library = super.fillLibrary(userProducts, pageNum);
         return library;
     }
 
+    /**
+	 * Searches for a product in the regular user's book and magazine arrays based on the identifier provided.
+	 *
+	 * @param id The identifier of the product to search for.
+     * @return The found product or null if not found.
+	 */
     public Product searchProduct(String id){
         Product productFound=null;
         boolean found=false;
@@ -135,6 +165,22 @@ public class RegularUser extends User implements Announceable{
         return productFound;
     }
 
+    /**
+     * Gets the regular user's magazine array.
+     * 
+     * @return The regular user's magazine array.
+     */
+    public Magazine[] getMagazines(){
+        return magazines;
+    }
+
+    /**
+     * Generates a display advertisement based on the specified product type and page count.
+     * 
+     * @param productType The type of product (1:BOOK, 2:MAGAZINE).
+     * @param pagesCount The product's page count read.
+     * @return A string representing the display advertisement.
+     */
     public String displayAds(int productType, int pagesCount){
         String ad="";
         String[] ads = {

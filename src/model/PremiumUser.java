@@ -3,50 +3,65 @@ import java.util.*;
 
 public class PremiumUser extends User{
 
-    private ArrayList<Book> books;
-    private ArrayList<Magazine> magazines;
+    //Relation
+    private ArrayList<Product> userProducts;
 
+    /**
+	 * Constructor for the PremiumUser class.
+	 * 
+	 * <br>post:</br> A new instance of the PremiumUser class is created.
+	 *
+	 * @param name The name of the premium user.
+	 * @param id The identification of the premium user.
+	 */
     public PremiumUser(String name, String id){
         super(name, id);
-        books= new ArrayList<>();
-        magazines= new ArrayList<>();
+        userProducts= new ArrayList<>();
     }
 
-    public String addBook(Book book){
+    /**
+	 * Adds a product to the premium user's product list.
+	 *
+	 * @param product The product to be added.
+     * @return A message indicating the result of the operation.
+	 */
+    public String addProduct(Product product){
         String message="\nBook successfully purchased!.";
-        if (books.contains(book)) {
-            message="Error: The user has already purchased this book.";
+        if (userProducts.contains(product)) {
+            message="Error: The user already has this product";
         } else {
-            books.add(book);
+            userProducts.add(product);
+            if (product instanceof Magazine){
+                message="\nMagazine subscription successfully completed!.";
+            }
         }
         return message;
     }
 
-    public String addMagazine(Magazine magazine){
-        String message="\nMagazine subscription successfully completed!.";
-        if (magazines.contains(magazine)) {
-            message="Error: The user has already subscribed to this magazine.";
-        } else {
-            magazines.add(magazine);
-        }
-        return message;
-    }
-
+    /**
+	 * Removes a magazine subscription from the premium user's product list.
+	 *
+	 * @param magazine The magazine to be removed.
+     * @return A message indicating the result of the operation.
+	 */
     public String removeMagazine(Magazine magazine){
         String message="Magazine subscription successfully cancelled!.";
-        if (magazines.contains(magazine)){
-            magazines.remove(magazine);
+        if (userProducts.contains(magazine)){
+            userProducts.remove(magazine);
         } else {
             message="Error: The user has not subscribed to this magazine.";
         }
         return message;
     }
 
-    public String organizeLibrary(int pageNum){
-        String library="Library of "+super.getName()+": \nPage "+(pageNum+1);
-        ArrayList<Product> userProducts = new ArrayList<>();
-        userProducts.addAll(books);
-        userProducts.addAll(magazines);
+    /**
+     * Generates the display of the premium user's library based on the specified page number.
+     * 
+     * @param pageNum The page number to generate the library display for.
+     * @return A string representing the library display.
+     */
+    public String showLibrary(int pageNum){
+        // Sort userProducts based on publication date
         for (int i = 0; i < userProducts.size(); i++) {
             for (int j = i + 1; j < userProducts.size(); j++) {
                 Product product1 = userProducts.get(i);
@@ -57,30 +72,20 @@ public class PremiumUser extends User{
                 }
             }
         }
-
-        int startIndex = pageNum * 25;
-        int endIndex = Math.min(startIndex + 25, userProducts.size());
-
-        for (int i = 0; i < super.getLibrary().length; i++) {
-            for (int j = 0; j < super.getLibrary()[i].length; j++) {
-                if (i * super.getLibrary().length + j < endIndex - startIndex) {
-                    Product product = userProducts.get(startIndex + i * super.getLibrary().length + j);
-                    super.getLibrary()[i][j] = product.getId();
-                } else {
-                    super.getLibrary()[i][j] = "___";
-                }
-            }
-        }
-        library += super.displayLibrary();
+        // Call fillLibrary to generate the library display based on userProducts and pageNum
+        String library = super.fillLibrary(userProducts, pageNum);
         return library; 
     }
 
+    /**
+	 * Searches for a product in the premium user's product list based on the provided identifier.
+	 *
+	 * @param id The identifier of the product to search for.
+     * @return The found product or null if not found.
+	 */
     public Product searchProduct(String id){
         Product productFound=null;
-        boolean found=false;
-        ArrayList<Product> userProducts = new ArrayList<>();
-        userProducts.addAll(books);
-        userProducts.addAll(magazines);
+        boolean found=false;;
         for (int i=0; i < userProducts.size() && !found; i++) {
             Product product = userProducts.get(i);
             if(product.getId().equals(id)) {
@@ -89,5 +94,14 @@ public class PremiumUser extends User{
             }
         }
         return productFound;
+    }
+
+    /**
+     * Gets the premium user's product list.
+     * 
+     * @return The premium user's product list.
+     */
+    public ArrayList<Product> getProducts() {
+        return userProducts;
     }
 }

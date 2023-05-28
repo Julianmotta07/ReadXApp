@@ -3,14 +3,21 @@ import java.util.*;
 
 public class Company{
 
-    //attribute
+    //Attribute
     private String name;
     
-    //relations
+    //Relations
     private ArrayList<User> users;
     private ArrayList<Product> products;
     private ArrayList<Invoice> invoices;
 
+    /**
+	 * Constructor for the Company class.
+	 * 
+	 * <br>post:</br> A new instance of the Company class is created.
+	 * 
+	 * @param name The name of the company.
+	 */
     public Company(String name){
         this.name=name;
         users= new ArrayList<>();
@@ -18,6 +25,17 @@ public class Company{
         invoices= new ArrayList<>();
     }
 
+    /**
+     * Adds a new user to the company's user list.
+     * 
+     * <br>pre:</br> Parameter "userType" must be an integer value between 1 and 2.
+     * <br>post:</br> A new user is added to the company's user list.
+     *
+     * @param name The name of the user.
+     * @param id The identification of the user.
+     * @param userType The type of user (1:REGULAR USER, 2: PREMIUM USER).
+     * @return A string message indicating the result of the user addition.
+     */
     public String addUser(String name, String id, int userType){
         String message="";
         if (searchUser(id)!=null){
@@ -34,6 +52,22 @@ public class Company{
         return message;
     }
 
+    /**
+     * Adds a new book to the company's product list.
+     * 
+     * <br>pre:</br> Parameter "genreOpt" must be an integer value between 1 and 3.
+     * <br>post:</br> A new book is added to the company's product list.
+     *
+     * @param id The identifier of the book.
+	 * @param name The name of the book.
+	 * @param pagesNum The pages number of the book.
+	 * @param publicationDate The publication date of the book.
+     * @param url The URL of the repository with the book cover.
+	 * @param saleValue The sale value of the book.
+	 * @param review The review of the book.
+	 * @param genreOpt The book genre option (1:SCI-FI, 2:FANTASY, 3:HISTORICAL NOVEL).
+     * @return A string message indicating the result of the book addition.
+     */
     public String addProduct(String id, String name, int pagesNum, Calendar publicationDate, String url, double saleValue, String review, int genreOpt){
         String message="New book successfully registered!.";
         if (searchProduct(id)!=null){
@@ -45,6 +79,22 @@ public class Company{
         return message;
     }
 
+    /**
+     * Adds a new magazine to the company's product list.
+     * 
+     * <br>pre:</br> Parameters "issuanceFreqOpt" and "categoryOpt" must be an integer value between 1 and 3.
+     * <br>post:</br> A new magazine is added to the company's product list.
+     *
+     * @param id The identifier of the magazine.
+	 * @param name The name of the magazine.
+	 * @param pagesNum The pages number of the magazine.
+	 * @param publicationDate The publication date of the magazine.
+     * @param url The URL of the repository with the magazine cover.
+	 * @param subscriptionValue The subscription value of the magazine.
+	 * @param issuanceFreqOpt The magazine issuance frequency option (1:WEEKLY, 2:MONTHLY, 3:YEARLY).
+	 * @param categoryOpt The magazine category option (1:VARIETIES, 2:DESIGN, 3:SCIENTIFIC).
+     * @return A string message indicating the result of the magazine addition.
+     */
     public String addProduct(String id, String name, int pagesNum, Calendar publicationDate, String url, double subscriptionValue, int issuanceFreqOpt, int categoryOpt){
         String message="New magazine successfully registered!.";
         if (searchProduct(id)!=null){
@@ -56,6 +106,22 @@ public class Company{
         return message;
     }
 
+    /**
+     * Edits an existing book in the company's product list.
+     * 
+     * <br>pre:</br> Parameter "genreOpt" must be an integer value between 1 and 3.
+     * <br>post:</br> The information in the book is updated.
+     *
+     * @param id The identifier of the book to be edited.
+     * @param name The new name of the book.
+     * @param pagesNum The new number of pages of the book.
+     * @param publicationDate The new publication date of the book.
+     * @param url The new URL of the book's cover.
+     * @param value The new sale value of the book.
+     * @param review The new review of the book.
+     * @param genreOpt The new genre option of the book (1:SCI-FI, 2:FANTASY, 3:HISTORICAL NOVEL).
+     * @return A string message indicating the result of the book edit.
+     */
     public String editProduct(String id, String name, int pagesNum, Calendar publicationDate, String url, double value, String review, int genreOpt){
         String message="Book successfully updated.";
         Product product=searchProduct(id);
@@ -74,6 +140,22 @@ public class Company{
         return message;
     }
 
+    /**
+     * Edits an existing magazine in the company's product list.
+     * 
+     * <br>pre:</br> Parameters "issuanceFreqOpt" and "categoryOpt" must be an integer value between 1 and 3.
+     * <br>post:</br> The information in the magazine is updated.
+     *
+     * @param id The identifier of the magazine to be edited.
+     * @param name The new name of the magazine.
+     * @param pagesNum The new number of pages of the magazine.
+     * @param publicationDate The new publication date of the magazine.
+     * @param url The new URL of the magazine's cover.
+     * @param value The new subscription value of the magazine.
+     * @param issuanceFreqOpt The new issuance frequency option of the magazine (1:VARIETIES, 2:DESIGN, 3:SCIENTIFIC).
+     * @param categoryOpt The new category option of the magazine (1:VARIETIES, 2:DESIGN, 3:SCIENTIFIC).
+     * @return A string message indicating the result of the magazine edit.
+     */
     public String editProduct(String id, String name, int pagesNum, Calendar publicationDate, String url, double value, int issuanceFreqOpt, int categoryOpt){
         String message="Magazine successfully updated.";
         Product product=searchProduct(id);
@@ -88,10 +170,18 @@ public class Company{
             Magazine magazine = (Magazine) product;
             magazine.setIssuanceFreq(issuanceFreqOpt);
             magazine.setCategory(categoryOpt);
-        }
+        } 
         return message;
     }
 
+    /**
+     * Deletes a product from the company's product list.
+     * 
+     * <br>post:</br> The product is removed from the company's product list.
+     *
+     * @param id The identifier of the product to be deleted.
+     * @return A string message indicating the result of the product deletion.
+     */
     public String deleteProduct(String id) {
         String message="Product successfully removed.";
         Product product=searchProduct(id);
@@ -103,20 +193,27 @@ public class Company{
         return message;
     }
 
+    /**
+     * Generates objects for testing purposes.
+     * 
+     * <br>post:</br> The generated objects are added to the corresponding company lists.
+     *
+     * @return A string message containing the information of the generated objects.
+     */
     public String generateObjects(){
         String message="Generated objects: \n";
-        //Generates random 5-digit IDs
+        //Generate random 5-digit IDs
         int randomID1 = (int) (Math.random() * 90000) + 10000;
         String regularID = String.valueOf(randomID1);
         int randomID2 = (int) (Math.random() * 90000) + 10000;
         String premiumID = String.valueOf(randomID2);
-        //Generates 3-character hexadecimal ID
+        //Generate 3-character hexadecimal ID
         int randomID3 = (int) (Math.random() * 4096);
         String bookID = Integer.toHexString(randomID3).toUpperCase();
         if (bookID.length() < 3) {
             bookID = "0" + bookID;
         }
-        //Creates a 3-character alphanumeric ID
+        //Create a 3-character alphanumeric ID
         String MagazineID ="";
         for (int i = 0; i < 3; i++) {
             int randomNumber = (int) (Math.random() * 36);
@@ -128,99 +225,176 @@ public class Company{
             }
             MagazineID+=randomChar;
         }
-        //Creates the objects
-        RegularUser regularUser = new RegularUser("Regular user test", regularID);
-        PremiumUser premiumUser = new PremiumUser("Premium user test", premiumID);
-        Book book = new Book(bookID, "Book test", 100, Calendar.getInstance(), "test.png", 15, "Review text", 1);
-        Magazine magazine = new Magazine(MagazineID, "Magazine test", 100, Calendar.getInstance(), "test.png", 10, 1, 1);
-        //Adds the objetcs
+        //Create the objects
+        RegularUser regularUser = new RegularUser("Regular user "+regularID, regularID);
+        PremiumUser premiumUser = new PremiumUser("Premium user "+premiumID, premiumID);
+        Book book = new Book(bookID, "Book "+bookID, 100, Calendar.getInstance(), "test.png", 15, "Review text", 1);
+        Magazine magazine = new Magazine(MagazineID, "Magazine "+MagazineID, 100, Calendar.getInstance(), "test.png", 10, 1, 1);
+        //Add the objetcs
         users.add(regularUser);
         users.add(premiumUser);
         products.add(book);
         products.add(magazine);
-        //Returns the information of each object
+        //Get the information of each object
         message +="\n"+ regularUser.toString() + "\n" + premiumUser.toString() + "\n" + book.toString() + "\n" + magazine.toString();
         return message;
     }
 
+    /**
+     * Processes the purchase of a book by a user.
+     * 
+     * <br>post:</br> The book is added to the user's product list or books array and an invoice is created with the transaction information.
+     *
+     * @param userId The identification of the user making the purchase.
+     * @param bookId The identifier of the book being purchased.
+     * @return A string message indicating the result of the operation and the invoice information generated in case of success.
+     */
     public String buyBook(String userId, String bookId){
-        String message="";
+        String message="\nBook catalog:\n";
         User user = searchUser(userId);
-        Product product = searchProduct(bookId);
         if (user==null){
             message="Error: A user with the entered ID does not exist."; 
-        } else if (product==null || product instanceof Magazine ){
-            message="Error: A book with the entered ID does not exist.";
-        } else {
-            Book book = (Book) product;
-            if (user instanceof RegularUser){
-            RegularUser regularUser = (RegularUser) user;
-            message = regularUser.addBook(book);      
-            } else {
-            PremiumUser premiumUser = (PremiumUser) user;
-            message = premiumUser.addBook(book);
+        } else if (bookId==null){
+            for (int i = 0; i < products.size(); i++) {
+                Product product = products.get(i);
+                if (product instanceof Book){
+                    message+="\n"+product.toString();
+                }
             }
-            if (message.equals("\nBook successfully purchased!.")){
-                Invoice newInvoice= new Invoice(book.getValue(), user, product);
-                invoices.add(newInvoice);
-                book.setCopiesSold(book.getCopiesSold()+1);
-                message+="\n\nInvoice: \n"+newInvoice.toString();
+        } else {
+            Product product = searchProduct(bookId);
+            if (product==null || product instanceof Magazine ){
+                message="Error: A book with the entered ID does not exist.";
+            } else {
+                Book book = (Book) product;
+                if (user instanceof RegularUser){
+                RegularUser regularUser = (RegularUser) user;
+                message = regularUser.addBook(book);      
+                } else {
+                PremiumUser premiumUser = (PremiumUser) user;
+                message = premiumUser.addProduct(book);
+                }
+                if (message.equals("\nBook successfully purchased!.")){
+                    Invoice newInvoice= new Invoice(book.getValue(), user, product);
+                    invoices.add(newInvoice);
+                    book.setCopiesSold(book.getCopiesSold()+1);
+                    message+="\n\nInvoice: \n"+newInvoice.toString();
+                }
             }
         }
         return message;
     }
 
+    /**
+     * Processes the subscription of a magazine by a user.
+     * 
+     * <br>post:</br> The magazine is added to the user's product list or magazines array and an invoice is created with the transaction information.
+     *
+     * @param userId The identification of the user subscribing to the magazine.
+     * @param magazineId The identifier of the magazine being subscribed to.
+     * @return A string message indicating the result of the operation and the invoice information generated in case of success.
+     */
     public String subscribeMagazine(String userId, String magazineId){
-        String message="";
+        String message="\nMagazine catalog:\n";
         User user = searchUser(userId);
-        Product product = searchProduct(magazineId);
         if (user==null){
             message="Error: A user with the entered ID does not exist."; 
-        } else if (product==null || product instanceof Book){
-            message="Error: A magazine with the entered ID does not exist.";
+        } else if (magazineId==null){
+            for (int i = 0; i < products.size(); i++) {
+                Product product = products.get(i);
+                if (product instanceof Magazine){
+                    message+="\n"+product.toString();
+                }
+            }
         } else {
-            Magazine magazine = (Magazine) product;
-            if (user instanceof RegularUser){
-            RegularUser regularUser = (RegularUser) user;
-            message = regularUser.addMagazine(magazine);
+            Product product = searchProduct(magazineId);
+            if (product==null || product instanceof Book){
+                message="Error: A magazine with the entered ID does not exist.";
             } else {
-            PremiumUser premiumUser = (PremiumUser) user;
-            message = premiumUser.addMagazine(magazine);
-            }
-            if (message.equals("\nMagazine subscription successfully completed!.")){
-                Invoice newInvoice= new Invoice(magazine.getValue(), user, product);
-                invoices.add(newInvoice);
-                magazine.setActiveSubscriptions(magazine.getActiveSubscriptions()+1);
-                message+="\n\nInvoice: \n"+newInvoice.toString();
-            }
+                Magazine magazine = (Magazine) product;
+                if (user instanceof RegularUser){
+                RegularUser regularUser = (RegularUser) user;
+                message = regularUser.addMagazine(magazine);
+                } else {
+                PremiumUser premiumUser = (PremiumUser) user;
+                message = premiumUser.addProduct(magazine);
+                }
+                if (message.equals("\nMagazine subscription successfully completed!.")){
+                    Invoice newInvoice= new Invoice(magazine.getValue(), user, product);
+                    invoices.add(newInvoice);
+                    magazine.setActiveSubscriptions(magazine.getActiveSubscriptions()+1);
+                    message+="\n\nInvoice: \n"+newInvoice.toString();
+                }
+            } 
         }
         return message;
     }
     
+    /**
+     * Processes the unsubscription of a magazine by a user.
+     * 
+     * <br>post:</br> The magazine is removed from the user's product list or magazines array.
+     *
+     * @param userId The identification of the user unsubscribing from the magazine.
+     * @param magazineId The identifier of the magazine being unsubscribed from.
+     * @return A string message indicating the result of the operation.
+     */
     public String unsubscribeMagazine(String userId, String magazineId){
-        String message="";
+        String message="\nCurrent user subscriptions:\n";
         User user = searchUser(userId);
-        Product product = searchProduct(magazineId);
         if (user==null){
             message="Error: A user with the entered ID does not exist."; 
-        } else if (product==null || product instanceof Book){
-            message="Error: A magazine with the entered ID does not exist.";
-        } else {
-            Magazine magazine = (Magazine) product;
+        } else if (magazineId==null){
+            boolean foundMagazine=false;
             if (user instanceof RegularUser){
-            RegularUser regularUser = (RegularUser) user;
-            message = regularUser.removeMagazine(magazine);
+                RegularUser regularUser = (RegularUser) user;
+                for (int i = 0; i < regularUser.getMagazines().length; i++) {
+                    if (regularUser.getMagazines()[i]!=null){
+                        message+="\n Name: "+regularUser.getMagazines()[i].getName()+"\n ID: "+regularUser.getMagazines()[i].getId()+"\n";
+                        foundMagazine=true;
+                    }
+                }
             } else {
-            PremiumUser premiumUser = (PremiumUser) user;
-            message = premiumUser.removeMagazine(magazine);
+                PremiumUser premiumUser = (PremiumUser) user;
+                for (int i = 0; i < premiumUser.getProducts().size(); i++) {
+                    Product product = products.get(i);
+                    if (product instanceof Magazine){
+                        message+="\n Name: "+product.getName()+"\n ID: "+product.getId()+"\n";
+                        foundMagazine=true;
+                    }
+                }
             }
-            if (message.equals("Magazine subscription successfully cancelled!.")){
-                magazine.setActiveSubscriptions(magazine.getActiveSubscriptions()-1);
+            if (!foundMagazine){
+                message="Error: The user has not subscribed to any magazine.";
+            }
+        } else {
+            Product product = searchProduct(magazineId);
+            if (product==null || product instanceof Book){
+                message="Error: A magazine with the entered ID does not exist.";
+            } else {
+                Magazine magazine = (Magazine) product;
+                if (user instanceof RegularUser){
+                RegularUser regularUser = (RegularUser) user;
+                message = regularUser.removeMagazine(magazine);
+                } else {
+                PremiumUser premiumUser = (PremiumUser) user;
+                message = premiumUser.removeMagazine(magazine);
+                }
+                if (message.equals("Magazine subscription successfully cancelled!.")){
+                    magazine.setActiveSubscriptions(magazine.getActiveSubscriptions()-1);
+                }
             }
         }
         return message;
     }
     
+    /**
+     * Displays the library of a user.
+     *
+     * @param userId The identification of the user whose library is to be displayed.
+     * @param pageNum The page number of the library to be displayed.
+     * @return A string message displaying the user's library.
+     */
     public String displayMyLibrary(String userId, int pageNum){
         String message="";
         User user = searchUser(userId);
@@ -229,15 +403,25 @@ public class Company{
         } else {
             if (user instanceof RegularUser) {
                 RegularUser regularUser = (RegularUser) user;
-                message+=regularUser.organizeLibrary(pageNum);
+                message+=regularUser.showLibrary(pageNum);
             } else {
                 PremiumUser premiumUser = (PremiumUser) user;
-                message+=premiumUser.organizeLibrary(pageNum);
+                message+=premiumUser.showLibrary(pageNum);
             } 
         }    
         return message;
     }
 
+    /**
+     * Simulates a reading session for a user.
+     *
+     * @param userId The identification of the user.
+     * @param productId The identifier of the product to read.
+     * @param pageOpt The navigation option in the simulation ('S' for next page).
+     * @param page The current page being read.
+     * @param pagesCount The product's page count read.
+     * @return A string message simulating the reading session.
+     */
     public String simulateReadingSesion(String userId, String productId, char pageOpt, int page, int pagesCount){
         String message="Reading session in progress... \n";
         User user = searchUser(userId);
@@ -270,6 +454,17 @@ public class Company{
         return message;
     }
 
+    /**
+     * Simulates a reading session for a user.
+     *
+     * @param userId The identification of the user.
+     * @param xCoord The x-coordinate of the product in the library.
+     * @param yCoord The y-coordinate of the product in the library.
+     * @param pageOpt The navigation option in the simulation ('S' for next page).
+     * @param page The current page being read.
+     * @param pagesCount The product's page count read.
+     * @return A string message simulating the reading session.
+     */
     public String simulateReadingSesion(String userId, int xCoord, int yCoord, char pageOpt, int page, int pagesCount){
         String message="Reading session in progress... \n";
         User user = searchUser(userId);
@@ -304,6 +499,11 @@ public class Company{
         return message;
     }
 
+    /**
+     * Retrieves the total number of pages read per bibliographic product type.
+     *
+     * @return A string listing the pages read per product type.
+     */
     public String getPagesReadPerProductType(){
         String list="Pages read per bibliographic product type: \n";
         if (products.isEmpty()){
@@ -324,6 +524,11 @@ public class Company{
         return list;
     }
 
+    /**
+     * Retrieves the most read genre and category based on the accumulated page counts of products.
+     *
+     * @return A string indicating the most read genre and category, along with the corresponding page counts.
+     */
     public String getGenreAndCategoryMostRead(){
         String message="- Most read genre: ";
         if (products.isEmpty()){
@@ -384,12 +589,17 @@ public class Company{
         return message;
     }
 
+    /**
+     * Retrieves the top 5 most read products per type (books and magazines).
+     *
+     * @return A string indicating the top 5 most read books and magazines.
+     */
     public String getTop5MostReadProductsPerType(){
         String message="";
         if (products.isEmpty()){
             message="Error: No products registered yet.";
         } else {
-            //Creates a list for each type of product and adds them to the list.
+            //Create a list for each type of product and adds them to the list.
             ArrayList<Book> booksList = new ArrayList<>();
             ArrayList<Magazine> magazinesList = new ArrayList<>();
             for (int i = 0; i < products.size(); i++) {
@@ -409,7 +619,7 @@ public class Company{
             if (booksList.isEmpty()){
                 topBooks+="No books have been read yet. \n";
             } else {
-                //Sorts the list of books according to the number of pages read.
+                //Sort the list of books according to the number of pages read.
                 for (int i = 0; i < booksList.size(); i++) {
                     for (int j = i + 1; j < booksList.size(); j++) {
                         Book book1 = booksList.get(i);
@@ -420,7 +630,7 @@ public class Company{
                         }
                     }
                 }
-                //Gets the name of the first books in the list
+                //Get the name of the first books in the list
                 for (int i = 0; i < Math.min(5, booksList.size()); i++) {
                     Book book = booksList.get(i);
                     topBooks+="-"+(i+1)+". "+book.getName()+"\n";
@@ -431,7 +641,7 @@ public class Company{
             if (magazinesList.isEmpty()){
                 topMagazines+="No magazines have been read yet. \n";
             } else {
-                //Sorts the list of magazines according to the number of pages read.
+                //Sort the list of magazines according to the number of pages read.
                 for (int i = 0; i < magazinesList.size(); i++) {
                     for (int j = i + 1; j < magazinesList.size(); j++) {
                         Magazine magazine1 = magazinesList.get(i);
@@ -442,7 +652,7 @@ public class Company{
                         }
                     }
                 }
-                //Gets the name of the first magazines in the list
+                //Get the name of the first magazines in the list
                 for (int i = 0; i < Math.min(5, magazinesList.size()); i++) {
                     Magazine magazine = magazinesList.get(i);
                     topMagazines+="-"+(i+1)+". "+magazine.getName()+"\n";
@@ -453,6 +663,11 @@ public class Company{
         return message;
     }
 
+    /**
+     * Retrieves the number of books sold and the total amount paid per genre.
+     *
+     * @return A string indicating the number of books sold and the total sales value per genre.
+     */
     public String getSoldNumAndTotalPaidPerGenre(){
         String list="";
         if (invoices.isEmpty()){
@@ -485,6 +700,11 @@ public class Company{
         return list;
     }
 
+    /**
+     * Retrieves the number of active subscriptions and the total amount paid in subscriptions per magazine category.
+     *
+     * @return A string indicating the number of active subscriptions and the total amount paid in subscriptions per magazine category.
+     */
     public String getActSubsAndTotalPaidPerCategory(){
         String list="";
         if (invoices.isEmpty()){
@@ -517,6 +737,30 @@ public class Company{
         return list;
     }
 
+    /**
+     * Retrieves the company's current product list.
+     *
+     * @return a message containing the company's current product list.
+     */
+    public String showProductList(){
+        String message="Current product list: \n";
+        if (products.isEmpty()){
+            message="Error: No products registered yet.";
+        } else {
+            for (int i = 0; i < products.size(); i++) {
+                Product product = products.get(i);
+                message+="\n Name: "+product.getName()+"\n ID: "+product.getId()+"\n";
+            }
+        }
+        return message;
+    }
+
+    /**
+	 * Searches for a user in the company's user list based on the identification provided.
+	 *
+	 * @param id The identification of the user to search for.
+     * @return The found user or null if not found.
+	 */
     private User searchUser(String id){
         User userFound=null;
         boolean found=false;
@@ -530,6 +774,12 @@ public class Company{
         return userFound;
     }
 
+    /**
+	 * Searches for a product in the company's product list based on the identifier provided.
+	 *
+	 * @param id The identifier of the product to search for.
+     * @return The found product or null if not found.
+	 */
     private Product searchProduct(String id){
         Product productFound=null;
         boolean found=false;
